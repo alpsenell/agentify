@@ -1,0 +1,129 @@
+---
+import { STAGES } from '../../data/process';
+---
+<section class="stages container" aria-labelledby="stages-heading">
+  <h2 id="stages-heading" class="visually-hidden">The seven stages</h2>
+
+  <div class="tabs" role="tablist" aria-label="Pipeline stages">
+    {STAGES.map((s, i) => (
+      <button
+        type="button"
+        class="tab mono"
+        role="tab"
+        id={`stage-tab-${i}`}
+        aria-selected={i === 0 ? 'true' : 'false'}
+        aria-controls={`stage-panel-${i}`}
+        tabindex={i === 0 ? 0 : -1}
+        data-stage-tab={i}
+      >
+        <span class="num">{s.num}</span>
+        <span class="label">{s.label}</span>
+      </button>
+    ))}
+  </div>
+
+  {STAGES.map((s, i) => {
+    const you = s.owner === 'You';
+    return (
+      <article
+        class:list={['panel', { 'panel--you': you }]}
+        role="tabpanel"
+        id={`stage-panel-${i}`}
+        aria-labelledby={`stage-tab-${i}`}
+        hidden={i !== 0}
+        data-stage-panel={i}
+      >
+        <div class="main">
+          <div class="strip">
+            <span class="stage-num mono">stage {s.num}</span>
+            <span class="rule" aria-hidden="true"></span>
+            <span class="owner mono">{s.owner}</span>
+          </div>
+          <h3 class="title">{s.title}</h3>
+          <p class="body">{s.body}</p>
+          <dl class="io">
+            <div class="cell">
+              <dt class="mono">enters as</dt>
+              <dd>{s.enters}</dd>
+            </div>
+            <div class="cell">
+              <dt class="mono">leaves as</dt>
+              <dd class="strong">{s.leaves}</dd>
+            </div>
+          </dl>
+        </div>
+        <aside class="side">
+          <div class="gate">
+            <p class="gate-kind mono">{s.gateKind}</p>
+            <p class="gate-text">{s.gate}</p>
+          </div>
+          <h4 class="fails-heading mono">if it fails here</h4>
+          <ul class="fails">
+            {s.failures.map((f) => (
+              <li><span class="arrow" aria-hidden="true">↩</span><span>{f}</span></li>
+            ))}
+          </ul>
+          <p class="dur">
+            <span class="mono">typical duration</span>
+            <strong>{s.dur}</strong>
+          </p>
+        </aside>
+      </article>
+    );
+  })}
+</section>
+
+<style>
+  .stages { position: relative; z-index: 1; padding-top: 26px; }
+
+  .tabs { display: flex; border: 1px solid var(--ink); border-bottom: 0; overflow-x: auto; }
+  .tab {
+    flex: 1; min-width: 96px; background: transparent; color: var(--ink);
+    border: 0; border-right: 1px solid var(--ink);
+    padding: 12px 8px; font-size: 10px; letter-spacing: 0.14em; text-align: left;
+    display: flex; flex-direction: column; gap: 2px;
+  }
+  .tab:last-child { border-right: 0; }
+  .tab:hover { opacity: 0.82; }
+  .tab[aria-selected="true"] { background: var(--ink); color: var(--paper); }
+  .tab .num { opacity: 0.6; font-size: 9px; }
+
+  .panel {
+    border: 1px solid var(--ink); background: var(--card);
+    padding: 34px; display: grid; grid-template-columns: minmax(0, 1fr) 340px; gap: 44px; min-height: 430px;
+  }
+  .strip { display: flex; align-items: baseline; gap: 14px; margin-bottom: 12px; }
+  .stage-num { font-size: 10px; letter-spacing: 0.18em; color: var(--mag); }
+  .panel--you .stage-num { color: var(--orange-text); }
+  .rule { flex: 1; height: 1px; background: var(--line); }
+  .owner { font-size: 9px; letter-spacing: 0.14em; color: var(--mute); }
+  .title { font-size: clamp(36px, 4.5vw, 54px); font-weight: 800; letter-spacing: -0.045em; line-height: 0.98; margin: 0 0 16px; }
+  .body { font-size: 17px; line-height: 1.6; max-width: 58ch; margin: 0 0 28px; }
+
+  .io { margin: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); border-top: 1px solid var(--ink); border-left: 1px solid var(--ink); }
+  .cell { border-right: 1px solid var(--ink); border-bottom: 1px solid var(--ink); padding: 16px; }
+  .cell dt { font-size: 8px; color: var(--mute); margin-bottom: 10px; }
+  .cell dd { margin: 0; font-size: 14px; line-height: 1.55; }
+  .cell .strong { font-weight: 500; }
+
+  .gate { border: 1px solid var(--ink); background: #fdf1ea; color: var(--ink); padding: 18px; margin-bottom: 20px; }
+  .panel--you .gate { background: var(--orange-text); color: var(--card); }
+  .gate-kind { font-size: 8px; opacity: 0.7; margin-bottom: 8px; }
+  .gate-text { font-size: 15px; line-height: 1.5; }
+  .fails-heading { font-size: 9px; letter-spacing: 0.18em; font-weight: 400; margin-bottom: 12px; }
+  .fails li {
+    display: grid; grid-template-columns: 16px 1fr; gap: 10px; padding: 9px 0;
+    border-top: 1px solid var(--line); font-size: 13px; line-height: 1.5; color: var(--body);
+  }
+  .arrow { color: var(--orange); }
+  .dur { margin-top: 22px; border-top: 1px solid var(--ink); padding-top: 14px; display: flex; align-items: baseline; gap: 10px; }
+  .dur .mono { font-size: 8px; color: var(--mute); }
+  .dur strong { margin-left: auto; font-size: 22px; font-weight: 700; letter-spacing: -0.03em; font-variant-numeric: tabular-nums; }
+
+  @media (max-width: 960px) {
+    .panel { grid-template-columns: minmax(0, 1fr); gap: 28px; padding: 24px; }
+  }
+  @media (max-width: 560px) {
+    .io { grid-template-columns: minmax(0, 1fr); }
+  }
+</style>

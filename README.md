@@ -10,15 +10,20 @@ executing JavaScript. A small client script animates the Live board after load.
 | Route      | Source                     | Status                                  |
 | ---------- | -------------------------- | --------------------------------------- |
 | `/live`    | `src/pages/live.astro`     | Implemented from `Live.dc.html`         |
-| `/`        | `src/pages/index.astro`    | Placeholder (noindex) — Console design  |
-| `/team`    | `src/pages/team.astro`     | Placeholder (noindex)                   |
-| `/process` | `src/pages/process.astro`  | Placeholder (noindex)                   |
-| `/pricing` | `src/pages/pricing.astro`  | Placeholder (noindex)                   |
-| `/contact` | `src/pages/contact.astro`  | Placeholder (noindex)                   |
+| `/`        | `src/pages/index.astro`    | Implemented from `Agentify Console.dc.html` |
+| `/team`    | `src/pages/team.astro`     | Implemented from `Team.dc.html`         |
+| `/process` | `src/pages/process.astro`  | Implemented from `Process.dc.html`      |
+| `/pricing` | `src/pages/pricing.astro`  | Implemented from `Pricing.dc.html`      |
+| `/contact` | `src/pages/contact.astro`  | Implemented from `Contact.dc.html`      |
 
-Placeholders exist only so internal links resolve. They carry
-`noindex, nofollow` and are excluded from the sitemap (see `PLACEHOLDER_ROUTES`
-in `astro.config.mjs`). Replace each with its design and remove it from that set.
+Every page is indexable and listed in the sitemap. To keep a future page out
+of the sitemap, add its path to `PLACEHOLDER_ROUTES` in `astro.config.mjs` and
+pass `noindex` to the Base layout.
+
+Shared building blocks: `src/layouts/Base.astro` (SEO head, header, footer),
+`src/components/PageHero.astro` and `PageCta.astro` (used by Team, Process,
+Pricing and Contact), page data in `src/data/`, page sections in
+`src/components/<page>/`, one client script per page in `src/scripts/`.
 
 ## SEO checklist (per page, via `src/layouts/Base.astro`)
 
@@ -29,6 +34,14 @@ in `astro.config.mjs`). Replace each with its design and remove it from that set
 - Real `<table>` for the ticket queue, lists for lanes and the feed, `<time>` elements
 - `sitemap-index.xml` and `robots.txt` generated at build time
 - Responsive layout with no horizontal page scroll; reduced-motion respected
+
+## Intake form
+
+`/contact` is a real three-step `<form>` (fields: `store`, `email`, `problem`,
+`band`, `roles[]`). No backend is wired yet: submission shows the confirmation
+locally. To post the intake somewhere, set `data-endpoint="https://…"` on the
+form in `src/components/contact/IntakeForm.astro`; the script POSTs the answers
+as JSON.
 
 ## Configuration
 

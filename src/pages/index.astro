@@ -1,19 +1,66 @@
 ---
 import Base from '../layouts/Base.astro';
-// Placeholder: this route exists so internal links resolve while the
-// "Console" design is implemented. It is noindex and not in the sitemap.
+import Hero from '../components/console/Hero.astro';
+import ConsoleSection from '../components/console/ConsoleSection.astro';
+import Band from '../components/console/Band.astro';
+import Team from '../components/console/Team.astro';
+import Delta from '../components/console/Delta.astro';
+import Access from '../components/console/Access.astro';
+import Faqs from '../components/console/Faqs.astro';
+import Contact from '../components/console/Contact.astro';
+import { ACTION_COUNT, DEFAULT_LOG_STEP, FAQS, LOG } from '../data/console';
+
+const title = 'A whole product team, running as software';
+const description =
+  'Ten specialist agents — product, design, copy, SEO, frontend, backend, QA, data, deploy — run one pipeline on your Shopify store, behind a human gate.';
+const footerTicker = `last action · ${LOG[Math.min(LOG.length - 1, DEFAULT_LOG_STEP)][0]} · --:--`;
+const origin = (Astro.site ?? new URL('https://agentify.plus')).origin;
+
+const jsonLd = [
+  {
+    '@type': 'BreadcrumbList',
+    itemListElement: [{ '@type': 'ListItem', position: 1, name: 'Console', item: `${origin}/` }],
+  },
+  {
+    '@type': 'FAQPage',
+    mainEntity: FAQS.map((f) => ({
+      '@type': 'Question',
+      name: f.q,
+      acceptedAnswer: { '@type': 'Answer', text: f.a },
+    })),
+  },
+];
 ---
-<Base title="Console" description="Console page of Agentify, the AI-powered Shopify build team." path="/" noindex>
-  <section class="container stub">
-    <p class="mono eyebrow">coming soon</p>
-    <h1>Console</h1>
-    <p>This page is being built. In the meantime, see <a href="/live">what the team is doing right now</a>.</p>
-  </section>
+<Base
+  title={title}
+  description={description}
+  path="/"
+  ogImage="/og/console.png"
+  ogImageAlt="The Agentify console: a pipeline of ten specialist agents shipping Shopify store changes behind a human gate"
+  jsonLd={jsonLd}
+  headerClock
+  headerActions={ACTION_COUNT}
+  footerVariant="console"
+  footerTicker={footerTicker}
+>
+  <div class="progress" data-progress aria-hidden="true"></div>
+
+  <Hero />
+  <ConsoleSection />
+  <Band />
+  <Team />
+  <Delta />
+  <Access />
+  <Faqs />
+  <Contact />
 </Base>
 
+<script src="../scripts/console.ts"></script>
+
 <style>
-  .stub { padding-block: 80px 120px; max-width: 60ch; }
-  .eyebrow { font-size: 10px; color: var(--mag); margin-bottom: 18px; }
-  h1 { font-size: clamp(36px, 6vw, 56px); letter-spacing: -0.05em; line-height: 0.95; margin-bottom: 18px; }
-  p { font-size: 16px; color: var(--body); }
+  .progress {
+    position: fixed; top: 0; left: 0; z-index: 61;
+    width: var(--progress, 0%); height: 3px; background: var(--mag);
+    pointer-events: none;
+  }
 </style>

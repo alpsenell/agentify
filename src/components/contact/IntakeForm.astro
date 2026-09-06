@@ -1,0 +1,198 @@
+---
+import { ROLES, DEFAULT_PICKED, BANDS, DEFAULT_BAND, STEPS } from '../../data/contact';
+const chosen = ROLES.filter((r) => DEFAULT_PICKED.includes(r.key)).map((r) => r.name).join(', ');
+---
+<form class="intake" method="post" action="/contact" data-intake novalidate aria-labelledby="page-title">
+  <ol class="steps" data-steps aria-label="Intake steps">
+    {STEPS.map((s, i) => (
+      <li class:list={['step mono', { 'is-active': i === 0 }]} aria-current={i === 0 ? 'step' : undefined} data-step-tab={i}>
+        <span class="step-num">step {s.num}</span>
+        <span class="step-label">{s.label}</span>
+      </li>
+    ))}
+  </ol>
+
+  <fieldset class="panel" data-step-panel="0">
+    <legend class="h2">Where is the store, and what is wrong with it?</legend>
+    <div class="two">
+      <label class="field">
+        <span class="lbl mono">store url</span>
+        <input class="input" type="text" name="store" inputmode="url" autocomplete="url" placeholder="yourstore.com" required minlength="3" data-store />
+      </label>
+      <label class="field">
+        <span class="lbl mono">work email</span>
+        <input class="input" type="email" name="email" autocomplete="email" placeholder="you@yourstore.com" required data-email />
+      </label>
+    </div>
+    <label class="field block">
+      <span class="lbl mono">the problem, in your words</span>
+      <textarea class="input" name="problem" rows="4" placeholder="Mobile converts at half of desktop and nobody has had time to look at it since March." data-problem></textarea>
+    </label>
+    <fieldset class="bands">
+      <legend class="lbl mono">monthly revenue band</legend>
+      <div class="chips">
+        {BANDS.map((b) => (
+          <label class="chip mono">
+            <input type="radio" name="band" value={b} checked={b === DEFAULT_BAND} data-band />
+            <span>{b}</span>
+          </label>
+        ))}
+      </div>
+    </fieldset>
+  </fieldset>
+
+  <fieldset class="panel" data-step-panel="1" hidden>
+    <legend class="h2">Which roles do you want on shift?</legend>
+    <p class="lead">Pick as many as you like — Atlas and the human gate are always included. Four is the usual pilot.</p>
+    <ul class="roles">
+      {ROLES.map((r) => {
+        const on = DEFAULT_PICKED.includes(r.key);
+        return (
+          <li>
+            <label class:list={['role', { 'is-locked': r.locked, 'is-you': r.name === 'You' }]}>
+              <input type="checkbox" name="roles" value={r.key} checked={on} disabled={r.locked} data-role={r.key} data-role-name={r.name} />
+              <span class="box" aria-hidden="true"></span>
+              <span class="role-text">
+                <span class="role-name">{r.name}</span>
+                <span class="role-short">{r.short}</span>
+              </span>
+              <span class="role-tag mono" data-role-tag>{r.locked ? 'always on' : on ? 'on shift' : ''}</span>
+            </label>
+          </li>
+        );
+      })}
+    </ul>
+  </fieldset>
+
+  <fieldset class="panel" data-step-panel="2" hidden>
+    <legend class="h2">Check the intake, then send it.</legend>
+    <dl class="summary">
+      <div><dt class="mono">store</dt><dd class="is-empty" data-sum="store">not given</dd></div>
+      <div><dt class="mono">email</dt><dd class="is-empty" data-sum="email">not given</dd></div>
+      <div><dt class="mono">revenue band</dt><dd data-sum="band">{DEFAULT_BAND}</dd></div>
+      <div><dt class="mono">the problem</dt><dd class="is-empty" data-sum="problem">Atlas will ask on the first call.</dd></div>
+      <div><dt class="mono">roles on shift</dt><dd data-sum="roles">{chosen}</dd></div>
+    </dl>
+    <div class="next-box">
+      <p class="next-kicker mono">what happens next</p>
+      <p class="next-text">Atlas reads the store and drafts the ticket queue. A human operator reviews it, then sends you the scope — usually within one business day, always before anything is billed.</p>
+    </div>
+  </fieldset>
+
+  <div class="done" data-done hidden tabindex="-1">
+    <p class="done-kicker mono">intake received · ticket <span data-ticket-id>#4193</span></p>
+    <h2 class="done-title">Atlas has it. Scope lands within a day.</h2>
+    <p class="done-text">We sent a copy to <span data-email-out>your inbox</span>. Nothing is billed until you approve the scope, and the pilot is cancellable with two weeks' notice from the day it starts.</p>
+    <div class="done-actions">
+      <a class="btn solid mono" href="/live">See a live board</a>
+      <button type="button" class="btn ghost mono" data-restart>Submit another store</button>
+    </div>
+  </div>
+
+  <div class="nav" data-nav>
+    <button type="button" class="back mono" data-back disabled>← back</button>
+    <p class="hint mono" data-hint aria-live="polite">store url and email needed</p>
+    <button type="submit" class="next mono" data-next>continue</button>
+  </div>
+</form>
+
+<style>
+  .intake { border: 1px solid var(--ink); background: var(--card); margin: 0; padding: 0; }
+  fieldset { border: 0; margin: 0; padding: 0; min-width: 0; }
+  legend { padding: 0; }
+
+  .steps { display: flex; border-bottom: 1px solid var(--ink); counter-reset: none; }
+  .step { flex: 1; border-right: 1px solid var(--ink); padding: 13px 16px; display: flex; flex-direction: column; gap: 1px; }
+  .step:last-child { border-right: 0; }
+  .step-num { font-size: 9px; opacity: 0.7; }
+  .step-label { font-size: 10px; letter-spacing: 0.14em; }
+  .step.is-active { background: var(--ink); color: var(--paper); }
+  .step.is-past { background: var(--track); }
+  .steps.is-done .step { background: var(--paper); color: var(--ink); }
+
+  .panel { padding: 30px 34px 26px; }
+  .h2 { font-size: clamp(24px, 3vw, 34px); font-weight: 700; letter-spacing: -0.035em; margin: 0 0 24px; }
+  .lead { font-size: 15px; color: var(--body); margin: -16px 0 24px; max-width: 56ch; }
+
+  .two { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; margin-bottom: 18px; }
+  .field { display: block; }
+  .block { margin-bottom: 20px; }
+  .lbl { display: block; font-size: 9px; color: var(--mute); margin-bottom: 7px; }
+  .input {
+    width: 100%; background: var(--paper); border: 1px solid var(--ink);
+    padding: 13px; font: inherit; font-size: 15px; line-height: 1.5; color: var(--ink);
+  }
+  textarea.input { resize: vertical; }
+  .input::placeholder { color: var(--mute); }
+  .input:focus-visible { outline: 2px solid var(--mag); outline-offset: 1px; }
+
+  .bands .lbl { margin-bottom: 10px; }
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; }
+  .chip { position: relative; display: inline-flex; cursor: pointer; }
+  .chip input { position: absolute; opacity: 0; width: 0; height: 0; }
+  .chip span {
+    display: block; border: 1px solid var(--line); color: var(--mute);
+    padding: 9px 14px; font-size: 10px; letter-spacing: 0.12em;
+  }
+  .chip:hover span { border-color: var(--ink); }
+  .chip input:checked + span { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+  .chip input:focus-visible + span { outline: 2px solid var(--mag); outline-offset: 2px; }
+
+  .roles { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); border-top: 1px solid var(--line); }
+  .role {
+    display: grid; grid-template-columns: 18px minmax(0, 1fr) auto; gap: 14px; align-items: center;
+    border-bottom: 1px solid var(--line); padding: 14px 12px; cursor: pointer; position: relative;
+  }
+  .role:hover { background: var(--paper); }
+  .role.is-locked { cursor: default; }
+  .role input { position: absolute; opacity: 0; width: 0; height: 0; }
+  .role:has(input:checked) { background: var(--card); }
+  .box { width: 15px; height: 15px; border: 1px solid var(--ink); display: block; }
+  .role input:checked ~ .box { background: var(--mag); }
+  .role.is-you input:checked ~ .box { background: var(--orange-text); }
+  .role input:focus-visible ~ .box { outline: 2px solid var(--mag); outline-offset: 2px; }
+  .role-name { display: block; font-size: 15px; font-weight: 600; letter-spacing: -0.02em; }
+  .role-short { display: block; font-size: 12px; color: var(--mute); margin-top: 2px; }
+  .role-tag { font-size: 8px; letter-spacing: 0.14em; color: var(--mag); }
+  .role.is-locked .role-tag { color: var(--mute); }
+
+  .summary { margin: 0; border-top: 1px solid var(--ink); }
+  .summary div { display: grid; grid-template-columns: 150px minmax(0, 1fr); gap: 20px; padding: 14px 0; border-bottom: 1px solid var(--line); align-items: baseline; }
+  .summary dt { font-size: 9px; color: var(--mute); }
+  .summary dd { margin: 0; font-size: 15px; line-height: 1.5; overflow-wrap: anywhere; }
+  .summary dd.is-empty { color: var(--mute); }
+  .next-box { margin-top: 22px; border: 1px solid var(--ink); background: #fdf1ea; padding: 16px; }
+  .next-kicker { font-size: 9px; color: var(--mag); margin-bottom: 8px; }
+  .next-text { font-size: 14px; line-height: 1.6; }
+
+  .done { padding: 60px 34px; animation: ag-in .4s ease both; }
+  .done:focus { outline: none; }
+  .done-kicker { font-size: 10px; letter-spacing: 0.2em; color: var(--mag); margin-bottom: 18px; }
+  .done-title { font-size: clamp(30px, 4vw, 46px); font-weight: 800; letter-spacing: -0.045em; line-height: 1; margin: 0 0 18px; max-width: 20ch; }
+  .done-text { font-size: 16px; line-height: 1.6; color: var(--body); max-width: 50ch; margin: 0 0 28px; }
+  .done-actions { display: flex; gap: 12px; flex-wrap: wrap; }
+  .btn { padding: 14px 24px; font-size: 11px; }
+  .solid { background: var(--ink); color: var(--paper); }
+  .solid:hover { background: var(--mag); color: var(--paper); }
+  .ghost { border: 1px solid var(--ink); background: transparent; color: var(--ink); }
+  .ghost:hover { background: var(--ink); color: var(--paper); }
+
+  .nav { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; border-top: 1px solid var(--ink); padding: 16px 34px; }
+  .back { border: 1px solid var(--ink); background: transparent; color: var(--ink); padding: 12px 20px; font-size: 10px; }
+  .back:hover { border-color: var(--ink); }
+  .back:disabled { border-color: var(--line); color: var(--idle); cursor: default; }
+  .hint { font-size: 9px; letter-spacing: 0.14em; color: var(--mute); }
+  .next { margin-left: auto; background: var(--ink); color: var(--card); border: 0; padding: 13px 26px; font-size: 10px; }
+  .next:hover { opacity: 0.86; }
+  .next.is-send { background: var(--mag); }
+  .next[aria-disabled="true"] { background: var(--line); color: var(--body); cursor: not-allowed; opacity: 1; }
+
+  @media (max-width: 720px) {
+    .panel { padding: 22px 18px; }
+    .nav { padding: 14px 18px; }
+    .done { padding: 40px 18px; }
+    .two, .roles { grid-template-columns: minmax(0, 1fr); }
+    .summary div { grid-template-columns: minmax(0, 1fr); gap: 4px; }
+    .step { padding: 11px 10px; }
+  }
+</style>

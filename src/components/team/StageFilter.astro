@@ -1,0 +1,39 @@
+---
+/** Stage filter chips. With JS off every agent is shown, which is the default state. */
+import { STAGES, TEAM } from '../../data/team';
+---
+<section class="filter container" aria-label="Filter the roster by stage">
+  <span class="label mono" id="team-stage-label">filter by stage</span>
+  <div class="chips" role="group" aria-labelledby="team-stage-label">
+    {STAGES.map((s) => (
+      <button
+        type="button"
+        class="chip mono"
+        data-stage={s}
+        aria-pressed={s === 'all' ? 'true' : 'false'}
+      >{s}</button>
+    ))}
+  </div>
+  <p class="count mono" data-shown-count aria-live="polite">{TEAM.length} of {TEAM.length} shown</p>
+</section>
+
+<style>
+  .filter {
+    position: relative; z-index: 1;
+    padding-block: 22px 0;
+    display: flex; flex-wrap: wrap; align-items: center; gap: 8px;
+  }
+  .label { font-size: 9px; letter-spacing: 0.18em; color: var(--mute); margin-right: 8px; }
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; }
+  .chip {
+    background: transparent; color: var(--mute); border: 1px solid var(--line);
+    padding: 7px 13px; font-size: 9px; letter-spacing: 0.14em;
+  }
+  .chip:hover { border-color: var(--ink); }
+  .chip[aria-pressed="true"] { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+  .count { margin-left: auto; font-size: 9px; letter-spacing: 0.16em; color: var(--mute); }
+
+  @media (max-width: 720px) {
+    .count { margin-left: 0; width: 100%; }
+  }
+</style>

@@ -3,8 +3,14 @@ import { NAV, SITE } from '../config/site';
 
 interface Props {
   currentPath: string;
+  /** "access" shows the Request access button; "intake" shows the intake status label (Contact page). */
+  variant?: 'access' | 'intake';
+  /** Show the live clock (Live and Console pages). */
+  clock?: boolean;
+  /** Optional running action counter shown after the clock (Console page). */
+  actions?: number;
 }
-const { currentPath } = Astro.props;
+const { currentPath, variant = 'access', clock = false, actions } = Astro.props;
 ---
 <header class="site-header">
   <a class="brand" href="/" aria-label={`${SITE.name} home`}>
@@ -18,12 +24,19 @@ const { currentPath } = Astro.props;
     ))}
   </nav>
 
-  <p class="clock mono" aria-live="off">
-    <span class="dot" aria-hidden="true"></span>
-    <time data-clock aria-label="Current time">--:--</time>
-  </p>
+  {clock && (
+    <p class="clock mono" aria-live="off">
+      <span class="dot" aria-hidden="true"></span>
+      <time data-clock aria-label="Current time">--:--</time>
+      {actions != null && <span> · <span data-action-count>{actions.toLocaleString('en-US')}</span> actions</span>}
+    </p>
+  )}
 
-  <a class="cta mono" href="/contact">Request access</a>
+  {variant === 'intake' ? (
+    <p class="intake mono">intake · 2 slots open</p>
+  ) : (
+    <a class="cta mono" href="/contact">Request access</a>
+  )}
 </header>
 
 <style>
@@ -65,6 +78,7 @@ const { currentPath } = Astro.props;
     padding: 10px 18px; font-size: 10px; white-space: nowrap;
   }
   .cta:hover { background: var(--mag); color: var(--paper); }
+  .intake { font-size: 10px; color: var(--mag); white-space: nowrap; }
 
   @media (max-width: 900px) {
     .nav { order: 10; flex-basis: 100%; gap: 18px; overflow-x: auto; }

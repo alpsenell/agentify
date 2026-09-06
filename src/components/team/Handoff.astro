@@ -1,0 +1,53 @@
+---
+/** The handoff chain. Each node selects that agent in the roster above. */
+import { TEAM, roleColor, slug } from '../../data/team';
+---
+<section class="handoff container" aria-labelledby="handoff-label">
+  <div class="strip mono">
+    <h2 class="strip-label" id="handoff-label">the handoff</h2>
+    <span class="rule" aria-hidden="true"></span>
+    <p class="sits" data-handoff-note aria-live="polite">{TEAM[0].name} sits here</p>
+  </div>
+
+  <ol class="chain">
+    {TEAM.map((m, i) => (
+      <li class="node">
+        <button
+          type="button"
+          class="link"
+          data-select={slug(m)}
+          aria-pressed={i === 0 ? 'true' : 'false'}
+          aria-controls={`agent-${slug(m)}`}
+          style={`--role:${roleColor(m)}`}
+        >
+          <span class="link-role mono">{m.role}</span>
+          <span class="link-name">{m.name}</span>
+        </button>
+        {i < TEAM.length - 1 && <span class="arrow mono" aria-hidden="true">→</span>}
+      </li>
+    ))}
+  </ol>
+</section>
+
+<style>
+  .handoff { position: relative; z-index: 1; background: var(--ink); color: var(--paper); padding-block: 44px; }
+  .strip {
+    display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
+    font-size: 10px; letter-spacing: 0.2em; color: var(--dark-mute); margin-bottom: 26px;
+  }
+  .strip-label { font: inherit; letter-spacing: inherit; text-transform: inherit; }
+  .sits { font: inherit; letter-spacing: inherit; text-transform: inherit; }
+  .rule { flex: 1; height: 1px; background: var(--dark-line); min-width: 24px; }
+
+  .chain { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+  .node { display: flex; align-items: center; gap: 10px; }
+  .link {
+    border: 1px solid var(--dark-line); background: transparent; color: var(--dark-mute);
+    padding: 10px 13px; min-width: 92px; text-align: left; display: block;
+  }
+  .link:hover { border-color: var(--paper); }
+  .link[aria-pressed="true"] { border-color: var(--paper); background: var(--role); color: var(--card); }
+  .link-role { display: block; font-size: 8px; letter-spacing: 0.14em; opacity: 0.75; }
+  .link-name { display: block; font-size: 15px; font-weight: 600; letter-spacing: -0.02em; }
+  .arrow { font-size: 11px; letter-spacing: 0; color: var(--mute); }
+</style>

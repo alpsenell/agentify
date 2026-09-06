@@ -1,0 +1,203 @@
+---
+/**
+ * Roster + detail. All ten detail panels are server-rendered; nine carry the
+ * `hidden` attribute and the client script swaps which one is shown. With JS
+ * off the page still reads: Atlas is open and every panel is in the HTML.
+ */
+import { TEAM, STATUS_COLOR, roleColor, slug } from '../../data/team';
+---
+<section class="board container" aria-label="The ten standing briefs">
+  <div class="panel">
+    <div class="roster">
+      <h2 class="visually-hidden">Roster</h2>
+      <ul>
+        {TEAM.map((m, i) => (
+          <li data-entry data-stage={m.stage} data-name={slug(m)}>
+            <button
+              type="button"
+              class="entry"
+              data-select={slug(m)}
+              aria-pressed={i === 0 ? 'true' : 'false'}
+              aria-controls={`agent-${slug(m)}`}
+              style={`--role:${roleColor(m)}`}
+            >
+              <span class="entry-main">
+                <span class="entry-role mono">{m.num} · {m.role}</span>
+                <span class="entry-name">{m.name}</span>
+              </span>
+              <span class="entry-stage mono">{m.stage}</span>
+            </button>
+          </li>
+        ))}
+      </ul>
+    </div>
+
+    <div class="details">
+      {TEAM.map((m, i) => (
+        <article
+          class="detail"
+          id={`agent-${slug(m)}`}
+          data-panel={slug(m)}
+          aria-labelledby={`agent-${slug(m)}-name`}
+          hidden={i !== 0}
+          style={`--role:${roleColor(m)}`}
+        >
+          <p class="meta">
+            <span class="meta-role mono">{m.role} agent</span>
+            <span class="rule" aria-hidden="true"></span>
+            <span class="meta-stage mono">stage · {m.stage}</span>
+          </p>
+          <h2 class="name" id={`agent-${slug(m)}-name`}>{m.name}</h2>
+          <p class="brief">{m.brief}</p>
+
+          <div class="cells">
+            <div class="cell">
+              <h3 class="cell-label mono">reads</h3>
+              <ul class="cell-list">
+                {m.inputs.map((x) => <li class="reads">{x}</li>)}
+              </ul>
+            </div>
+            <div class="cell">
+              <h3 class="cell-label mono">produces</h3>
+              <ul class="cell-list">
+                {m.outputs.map((x) => <li class="produces">{x}</li>)}
+              </ul>
+            </div>
+            <div class="cell is-stop">
+              <h3 class="cell-label mono">hard stop</h3>
+              <p class="stop">{m.stop}</p>
+            </div>
+          </div>
+
+          <div class="lower">
+            <div class="log">
+              <div class="log-head">
+                <h3 class="log-label mono">last actions</h3>
+                <span class="dot" aria-hidden="true"></span>
+                <span class="rule" aria-hidden="true"></span>
+              </div>
+              <ol class="log-list">
+                {m.actions.map((act) => (
+                  <li class="action">
+                    <time class="action-time mono" datetime={act.time}>{act.time}</time>
+                    <span class="action-text">{act.text}</span>
+                    <span class="action-status mono" style={`color:${STATUS_COLOR[act.status]}`}>{act.status}</span>
+                  </li>
+                ))}
+              </ol>
+            </div>
+
+            <div class="metrics">
+              <h3 class="metrics-label mono">30-day</h3>
+              <dl class="metrics-list">
+                {m.metrics.map((met) => (
+                  <div class="metric">
+                    <dt class="metric-label mono">{met.label}</dt>
+                    <dd class="metric-value">{met.value}</dd>
+                  </div>
+                ))}
+              </dl>
+            </div>
+          </div>
+        </article>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .board { position: relative; z-index: 1; padding-block: 22px 60px; }
+  .panel {
+    display: grid; grid-template-columns: 300px minmax(0, 1fr);
+    border: 1px solid var(--ink); background: var(--card); min-height: 620px;
+  }
+
+  /* ── roster ─────────────────────────────────────────────────────── */
+  .roster { border-right: 1px solid var(--ink); }
+  .entry {
+    width: 100%; display: grid; grid-template-columns: minmax(0, 1fr) auto;
+    gap: 10px; align-items: center; text-align: left;
+    background: transparent; border: 0; border-bottom: 1px solid var(--line);
+    border-left: 3px solid transparent; padding: 15px 16px; color: var(--ink);
+  }
+  .entry:hover { background: #f0ece4; }
+  .entry[aria-pressed="true"] { background: var(--paper); border-left-color: var(--role); }
+  .entry-main { display: block; min-width: 0; }
+  .entry-role {
+    display: block; font-size: 8px; letter-spacing: 0.16em;
+    color: var(--role); margin-bottom: 5px;
+  }
+  .entry-name { display: block; font-size: 18px; font-weight: 700; letter-spacing: -0.03em; }
+  .entry-stage { font-size: 8px; letter-spacing: 0.14em; color: var(--mute); }
+
+  /* ── detail ─────────────────────────────────────────────────────── */
+  .detail { padding: 30px 34px; }
+  .meta { display: flex; align-items: baseline; gap: 14px; margin-bottom: 8px; flex-wrap: wrap; }
+  .meta-role { font-size: 10px; letter-spacing: 0.18em; color: var(--role); }
+  .meta-stage { font-size: 9px; letter-spacing: 0.14em; color: var(--mute); }
+  .rule { flex: 1; height: 1px; background: var(--line); min-width: 20px; }
+
+  .name { font-size: clamp(34px, 5vw, 52px); font-weight: 800; letter-spacing: -0.045em; margin-bottom: 14px; }
+  .brief { font-size: 17px; line-height: 1.6; color: var(--ink); max-width: 60ch; margin-bottom: 30px; }
+
+  .cells {
+    display: grid; grid-template-columns: repeat(3, minmax(0, 1fr));
+    border-top: 1px solid var(--ink); border-left: 1px solid var(--ink);
+    margin-bottom: 30px;
+  }
+  .cell { border-right: 1px solid var(--ink); border-bottom: 1px solid var(--ink); padding: 16px; }
+  .cell.is-stop { background: #fdf1ea; }
+  .cell-label { font-size: 8px; letter-spacing: 0.16em; color: var(--mute); margin-bottom: 10px; font-weight: 400; }
+  .cell-list li { font-size: 13px; line-height: 1.6; }
+  .reads { color: var(--body); }
+  .produces { color: var(--ink); font-weight: 500; }
+  .stop { font-size: 13px; line-height: 1.55; color: var(--ink); }
+
+  .lower { display: grid; grid-template-columns: minmax(0, 1fr) 250px; gap: 30px; }
+
+  .log-head { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+  .log-label { font-size: 9px; letter-spacing: 0.18em; color: var(--ink); font-weight: 400; }
+  .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--mag); flex: none; animation: ag-blink 2.2s infinite; }
+  .action {
+    display: grid; grid-template-columns: 46px minmax(0, 1fr) auto; gap: 14px;
+    align-items: baseline; padding: 9px 0; border-bottom: 1px solid var(--line);
+    animation: ag-in 0.3s both;
+  }
+  .action-time { font-size: 9px; letter-spacing: 0; color: var(--mute); font-variant-numeric: tabular-nums; }
+  .action-text { font-size: 14px; line-height: 1.4; }
+  .action-status { font-size: 9px; letter-spacing: 0.12em; }
+
+  .metrics-label { font-size: 9px; letter-spacing: 0.18em; color: var(--ink); margin-bottom: 14px; font-weight: 400; }
+  .metric { display: flex; flex-direction: column-reverse; border-top: 1px solid var(--line); padding: 12px 0; }
+  .metric-value { margin: 0; font-size: 26px; font-weight: 700; letter-spacing: -0.03em; font-variant-numeric: tabular-nums; }
+  .metric-label { font-size: 8px; letter-spacing: 0.14em; color: var(--mute); margin-top: 3px; }
+
+  /* ── responsive ─────────────────────────────────────────────────── */
+  @media (max-width: 1100px) {
+    .panel { grid-template-columns: 240px minmax(0, 1fr); }
+    .lower { grid-template-columns: minmax(0, 1fr) 210px; gap: 22px; }
+  }
+  @media (max-width: 900px) {
+    .panel { grid-template-columns: minmax(0, 1fr); min-height: 0; }
+    .roster { border-right: 0; border-bottom: 1px solid var(--ink); }
+    .roster ul { display: flex; overflow-x: auto; scrollbar-width: thin; }
+    .roster li { flex: 0 0 auto; }
+    .entry {
+      width: auto; min-width: 168px; height: 100%; align-items: start;
+      border-bottom: 0; border-right: 1px solid var(--line);
+      border-left: 0; border-top: 3px solid transparent;
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .entry[aria-pressed="true"] { border-left-color: transparent; border-top-color: var(--role); }
+    .entry-stage { margin-top: 6px; display: block; }
+    .detail { padding: 24px 22px; }
+    .cells { grid-template-columns: minmax(0, 1fr); }
+    .lower { grid-template-columns: minmax(0, 1fr); }
+  }
+  @media (max-width: 560px) {
+    .detail { padding: 20px 16px; }
+    .brief { font-size: 16px; }
+    .action { grid-template-columns: 44px minmax(0, 1fr); gap: 10px; }
+    .action-status { grid-column: 2; }
+  }
+</style>

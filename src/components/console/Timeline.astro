@@ -1,0 +1,87 @@
+---
+import { GANTT, DEFAULT_PLAYHEAD, TIMELINE_DAYS, barState, barNearRight } from '../../data/console';
+const dayLabel = ((DEFAULT_PLAYHEAD / 100) * TIMELINE_DAYS).toFixed(1);
+const rowActive = (i: number) => GANTT[i].bars.some((b) => barState(b, DEFAULT_PLAYHEAD) === 'live');
+---
+<div class="timeline" data-panel="timeline" id="view-timeline" role="tabpanel" aria-labelledby="tab-timeline" tabindex="0" hidden>
+  <div class="controls">
+    <button type="button" class="play mono" data-timeline-play aria-pressed="true">pause</button>
+    <label class="visually-hidden" for="playhead">Timeline position</label>
+    <input id="playhead" class="scrub" type="range" min="0" max="100" value={DEFAULT_PLAYHEAD} step="1" data-timeline-scrub />
+    <p class="day mono">day <span data-timeline-day>{dayLabel}</span> / {TIMELINE_DAYS}</p>
+  </div>
+
+  <ol class="rows" data-timeline-rows style={`--playhead:${DEFAULT_PLAYHEAD}%`}>
+    <li class="playhead" aria-hidden="true"></li>
+    {GANTT.map((g, i) => (
+      <li class:list={['row', { 'is-active': rowActive(i) }]} data-row>
+        <h3 class="role mono">{g.role}</h3>
+        <div class="lane">
+          {g.bars.map((b) => {
+            const state = barState(b, DEFAULT_PLAYHEAD);
+            const right = barNearRight(b);
+            return (
+              <>
+                <span
+                  class:list={['bar', `is-${state}`]}
+                  data-bar
+                  data-start={String(b.start)}
+                  data-len={String(b.len)}
+                  style={`left:${b.start}%;width:${b.len}%`}
+                  aria-hidden="true"
+                ></span>
+                <span
+                  class:list={['bar-label', 'mono', `is-${state}`, { 'is-right': right }]}
+                  data-bar-label
+                  style={right
+                    ? `right:calc(${100 - b.start}% + 8px);left:auto;text-align:right`
+                    : `left:calc(${b.start + b.len}% + 8px);right:auto;text-align:left`}
+                >{b.label}</span>
+              </>
+            );
+          })}
+        </div>
+      </li>
+    ))}
+  </ol>
+</div>
+
+<style>
+  .timeline { padding: 20px; }
+  .controls { display: flex; align-items: center; gap: 14px; margin-bottom: 18px; flex-wrap: wrap; }
+  .play {
+    background: var(--ink); color: var(--paper); border: 0;
+    padding: 9px 16px; font-size: 10px; letter-spacing: 0.16em;
+  }
+  .play:hover { background: var(--mag); }
+  .scrub { flex: 1; min-width: 140px; accent-color: var(--mag); cursor: pointer; }
+  .day {
+    font-size: 10px; letter-spacing: 0.14em; color: var(--mute);
+    font-variant-numeric: tabular-nums; min-width: 92px; text-align: right; margin-left: auto;
+  }
+
+  .rows { position: relative; border-top: 1px solid var(--line); }
+  .playhead { position: absolute; top: 0; bottom: 0; left: var(--playhead); width: 1px; background: var(--orange); z-index: 2; }
+
+  .row {
+    display: grid; grid-template-columns: 132px minmax(0, 1fr); gap: 12px; align-items: center;
+    border-bottom: 1px solid var(--line); padding: 7px 0;
+  }
+  .role { font-size: 9px; letter-spacing: 0.14em; color: var(--mute); font-weight: 400; }
+  .row.is-active .role { color: var(--mag); }
+
+  .lane { position: relative; height: 20px; }
+  .bar { position: absolute; top: 3px; height: 14px; background: var(--track); border: 1px solid var(--ink); }
+  .bar.is-live { background: var(--mag); border-color: var(--mag); }
+  .bar.is-past { background: var(--ink); border-color: var(--ink); }
+
+  .bar-label { position: absolute; top: 4px; font-size: 9px; letter-spacing: 0.1em; color: var(--mute); white-space: nowrap; }
+  .bar-label.is-live { color: var(--mag); }
+  .bar-label.is-past { color: var(--ink); }
+
+  @media (max-width: 700px) {
+    .row { grid-template-columns: 84px minmax(0, 1fr); }
+    .bar-label { font-size: 8px; }
+    .day { min-width: 0; }
+  }
+</style>

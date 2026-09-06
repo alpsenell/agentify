@@ -1,0 +1,37 @@
+---
+/** Closing call to action. */
+---
+<section class="cta container" aria-labelledby="team-cta-heading">
+  <div>
+    <h2 id="team-cta-heading">Pick the four you want in the pilot.</h2>
+    <p>
+      Most stores start with Atlas, Muse, Volt and Sieve — scope, design, build, test — then add content
+      and data agents once the cadence holds.
+    </p>
+  </div>
+  <div class="actions">
+    <a class="btn ghost mono" href="/process">See the process</a>
+    <a class="btn solid mono" href="/contact">Open a pilot</a>
+  </div>
+</section>
+
+<style>
+  .cta {
+    position: relative; z-index: 1;
+    padding-block: 54px;
+    display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 56px; align-items: end;
+  }
+  h2 { font-size: clamp(32px, 4.2vw, 46px); font-weight: 800; letter-spacing: -0.045em; line-height: 1; margin: 0 0 16px; max-width: 18ch; }
+  p { font-size: 16px; color: var(--body); max-width: 44ch; }
+  .actions { display: flex; gap: 12px; justify-self: end; flex-wrap: wrap; }
+  .btn { padding: 15px 24px; font-size: 11px; white-space: nowrap; }
+  .ghost { border: 1px solid var(--ink); color: var(--ink); }
+  .ghost:hover { background: var(--ink); color: var(--paper); }
+  .solid { background: var(--mag); color: var(--card); }
+  .solid:hover { background: var(--ink); color: var(--card); }
+
+  @media (max-width: 860px) {
+    .cta { grid-template-columns: minmax(0, 1fr); gap: 28px; }
+    .actions { justify-self: start; }
+  }
+</style>

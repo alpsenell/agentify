@@ -1,0 +1,95 @@
+---
+import { TEAM, COLOR } from '../../data/console';
+---
+<div class="org" data-panel="org" id="view-org" role="tabpanel" aria-labelledby="tab-org" tabindex="0" hidden>
+  <p class="hint mono">org · click a row to open the brief</p>
+
+  <div class="org-grid">
+    <div class="tree">
+      <div class="planner">
+        <p class="planner-role mono">planner</p>
+        <p class="planner-name">Atlas</p>
+      </div>
+      <ul class="branches mono">
+        <li>├─ build</li>
+        <li>├─ content</li>
+        <li>├─ quality</li>
+        <li>└─ gate (human)</li>
+      </ul>
+    </div>
+
+    <ul class="rows">
+      {TEAM.map((t, i) => (
+        <li class="row" id={`org-${t.name.toLowerCase()}`}>
+          <h3 class="row-h">
+            <button type="button" class="row-btn" data-org-toggle={String(i)} aria-expanded="false" aria-controls={`org-panel-${i}`}>
+              <span class="num mono">{t.num}</span>
+              <span class="role mono" style={`color:${t.role === 'Human' ? COLOR.orangeText : COLOR.mag}`}>{t.role}</span>
+              <span class="name">{t.name}</span>
+              <span class="stage mono">{t.stage}</span>
+              <span class="sign mono" aria-hidden="true"></span>
+            </button>
+          </h3>
+          <div class="drawer" id={`org-panel-${i}`} data-org-panel={String(i)}>
+            <div class="drawer-inner">
+              <p class="brief">{t.brief}</p>
+              <ul class="tags">
+                {t.outputs.map((o) => <li class="tag mono">{o}</li>)}
+              </ul>
+            </div>
+          </div>
+        </li>
+      ))}
+    </ul>
+  </div>
+</div>
+
+<style>
+  .org { padding: 24px 20px; }
+  .hint { font-size: 9px; letter-spacing: 0.18em; color: var(--mute); margin-bottom: 18px; }
+  .org-grid { display: grid; grid-template-columns: 200px minmax(0, 1fr); }
+
+  .tree { border-right: 1px solid var(--ink); padding-right: 20px; }
+  .planner { border: 1px solid var(--ink); background: var(--ink); color: var(--paper); padding: 12px; margin-bottom: 12px; }
+  .planner-role { font-size: 8px; letter-spacing: 0.16em; color: var(--mute); }
+  .planner-name { font-size: 16px; font-weight: 700; letter-spacing: -0.02em; }
+  .branches { font-family: var(--font-mono); font-size: 9px; line-height: 1.9; color: var(--mute); letter-spacing: 0.06em; }
+
+  .rows { padding-left: 20px; }
+  .row { border-bottom: 1px solid var(--line); }
+  .row-h { font: inherit; font-weight: inherit; }
+  .row-btn {
+    width: 100%; display: grid; grid-template-columns: 26px 108px minmax(0, 1fr) 90px 16px; gap: 14px;
+    align-items: center; background: transparent; border: 0; padding: 13px 10px; text-align: left; color: var(--ink);
+  }
+  .row-btn:hover { background: #f0ece4; }
+  .row-btn[aria-expanded='true'] { background: var(--paper); }
+  .num { font-size: 9px; color: var(--mute); letter-spacing: 0; text-transform: none; }
+  .role { font-size: 9px; letter-spacing: 0.14em; }
+  .name { font-size: 16px; font-weight: 600; letter-spacing: -0.02em; }
+  .stage { font-size: 9px; letter-spacing: 0.12em; color: var(--mute); }
+  .sign { color: var(--mute); font-size: 14px; letter-spacing: 0; }
+  .row-btn[aria-expanded='true'] .sign::before { content: '–'; color: var(--mag); }
+  .row-btn[aria-expanded='false'] .sign::before { content: '+'; }
+
+  .drawer { max-height: 0; overflow: hidden; transition: max-height .35s ease; }
+  .drawer.is-open { max-height: 320px; }
+  .drawer-inner { padding: 0 10px 18px 158px; }
+  .brief { font-size: 14px; line-height: 1.6; color: var(--body); max-width: 62ch; margin-bottom: 12px; }
+  .tags { display: flex; flex-wrap: wrap; gap: 6px; }
+  .tag { border: 1px solid var(--line); padding: 4px 8px; font-size: 9px; letter-spacing: 0.1em; color: var(--mute); }
+
+  @media (max-width: 860px) {
+    .org-grid { grid-template-columns: minmax(0, 1fr); }
+    .tree { border-right: 0; border-bottom: 1px solid var(--ink); padding-right: 0; padding-bottom: 16px; margin-bottom: 16px; }
+    .rows { padding-left: 0; }
+    .drawer-inner { padding-left: 10px; }
+  }
+  @media (max-width: 620px) {
+    .row-btn { grid-template-columns: 24px minmax(0, 1fr) 16px; gap: 10px; row-gap: 4px; }
+    .role { grid-column: 2; }
+    .name { grid-column: 2; }
+    .stage { grid-column: 2; }
+    .sign { grid-column: 3; grid-row: 1; }
+  }
+</style>

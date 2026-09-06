@@ -1,19 +1,80 @@
 ---
 import Base from '../layouts/Base.astro';
-// Placeholder: this route exists so internal links resolve while the
-// "Pricing" design is implemented. It is noindex and not in the sitemap.
+import Tiers from '../components/pricing/Tiers.astro';
+import Estimator from '../components/pricing/Estimator.astro';
+import Included from '../components/pricing/Included.astro';
+import Faq from '../components/pricing/Faq.astro';
+import Cta from '../components/pricing/Cta.astro';
+import { FAQS } from '../data/pricing';
+
+const title = 'Pricing: pay for a shift, not for hours';
+const description =
+  'Monthly pricing for the Agentify Shopify build team: Pilot at $4,500, Team at $9,800 and a custom Studio tier. Build your shift with the estimator.';
+const origin = (Astro.site ?? new URL('https://agentify.plus')).origin;
+
+const jsonLd = [
+  {
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Console', item: `${origin}/` },
+      { '@type': 'ListItem', position: 2, name: 'Pricing', item: `${origin}/pricing` },
+    ],
+  },
+  {
+    '@type': 'FAQPage',
+    '@id': `${origin}/pricing#faq`,
+    mainEntity: FAQS.map((f) => ({
+      '@type': 'Question',
+      name: f.q,
+      acceptedAnswer: { '@type': 'Answer', text: f.a },
+    })),
+  },
+];
 ---
-<Base title="Pricing" description="Pricing page of Agentify, the AI-powered Shopify build team." path="/pricing" noindex>
-  <section class="container stub">
-    <p class="mono eyebrow">coming soon</p>
-    <h1>Pricing</h1>
-    <p>This page is being built. In the meantime, see <a href="/live">what the team is doing right now</a>.</p>
+<Base
+  title={title}
+  description={description}
+  path="/pricing"
+  ogImage="/og/pricing.png"
+  ogImageAlt="Agentify pricing: Pilot, Team and Studio plans with a monthly shift estimator"
+  jsonLd={jsonLd}
+  footerNote="agentify · prices in usd, billed monthly"
+>
+  <section class="hero container" aria-labelledby="pricing-title">
+    <p class="eyebrow mono"><span class="sq" aria-hidden="true"></span>pricing · monthly, cancel any month</p>
+    <div class="hero-inner">
+      <h1 id="pricing-title">You pay for a shift, not for hours.</h1>
+      <p class="lede">No retainer blocks, no change orders, no unbilled scope arguments. Pick how many roles you want on shift and how many stores they cover. Everything else is included, including the human operator who holds the gate.</p>
+    </div>
   </section>
+
+  <Tiers />
+  <Estimator />
+  <Included />
+  <Faq />
+  <Cta />
 </Base>
 
+<script src="../scripts/pricing.ts"></script>
+
 <style>
-  .stub { padding-block: 80px 120px; max-width: 60ch; }
-  .eyebrow { font-size: 10px; color: var(--mag); margin-bottom: 18px; }
-  h1 { font-size: clamp(36px, 6vw, 56px); letter-spacing: -0.05em; line-height: 0.95; margin-bottom: 18px; }
-  p { font-size: 16px; color: var(--body); }
+  .hero { position: relative; z-index: 1; padding-block: 56px 34px; border-bottom: 1px solid var(--ink); }
+  .eyebrow {
+    display: flex; align-items: center; gap: 12px;
+    font-size: 10px; letter-spacing: 0.2em; color: var(--mag); margin-bottom: 18px;
+  }
+  .sq { width: 7px; height: 7px; background: var(--mag); flex: none; }
+  .hero-inner {
+    display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.8fr);
+    gap: 56px; align-items: end;
+  }
+  h1 {
+    font-size: clamp(44px, 6.5vw, 76px); font-weight: 800;
+    line-height: 0.92; letter-spacing: -0.05em; max-width: 16ch;
+  }
+  .lede { font-size: 16px; line-height: 1.6; color: var(--body); }
+
+  @media (max-width: 900px) {
+    .hero-inner { grid-template-columns: minmax(0, 1fr); gap: 24px; }
+  }
 </style>

@@ -1,0 +1,38 @@
+---
+/** Team hero: eyebrow, the page's single h1 and the standing-brief paragraph. */
+---
+<section class="hero container" aria-labelledby="team-title">
+  <p class="eyebrow mono"><span class="sq" aria-hidden="true"></span>the team · ten standing briefs</p>
+  <div class="grid">
+    <h1 id="team-title">Every role has a brief, a budget and a gate.</h1>
+    <p class="lede">
+      An agent is not a chatbot with a job title. Each one holds a written brief, a set of inputs it is
+      allowed to read, outputs it is expected to produce, and a hard stop where a human or another agent
+      has to sign.
+    </p>
+  </div>
+</section>
+
+<style>
+  .hero { position: relative; z-index: 1; padding-block: 56px 34px; border-bottom: 1px solid var(--ink); }
+  .eyebrow {
+    display: flex; align-items: center; gap: 12px;
+    font-size: 10px; letter-spacing: 0.2em; color: var(--mag); margin-bottom: 22px;
+  }
+  .sq { width: 7px; height: 7px; background: var(--mag); flex: none; }
+
+  .grid {
+    display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.8fr);
+    gap: 56px; align-items: end;
+  }
+  h1 {
+    font-size: clamp(44px, 6.5vw, 76px); font-weight: 800;
+    line-height: 0.92; letter-spacing: -0.05em; max-width: 17ch;
+  }
+  .lede { font-size: 16px; line-height: 1.6; color: var(--body); margin: 0 0 6px; }
+
+  @media (max-width: 900px) {
+    .grid { grid-template-columns: minmax(0, 1fr); gap: 24px; align-items: start; }
+    .lede { margin-bottom: 0; }
+  }
+</style>

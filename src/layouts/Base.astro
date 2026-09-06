@@ -25,6 +25,16 @@ export interface Props {
   jsonLd?: Record<string, unknown>[];
   /** Footer note text (left) */
   footerNote?: string;
+  /** Header right-hand slot: CTA button (default) or the intake label. */
+  headerVariant?: 'access' | 'intake';
+  /** Show the live clock in the header (Live page). */
+  headerClock?: boolean;
+  /** Running action counter after the header clock (Console page). */
+  headerActions?: number;
+  /** Footer layout: default note + back link, or the console variant with links + ticker. */
+  footerVariant?: 'default' | 'console';
+  /** Initial footer ticker text (console variant). */
+  footerTicker?: string;
   /** Optional ISO dates for article-style metadata */
   publishedTime?: string;
   modifiedTime?: string;
@@ -39,6 +49,11 @@ const {
   ogImageAlt,
   jsonLd = [],
   footerNote,
+  headerVariant = 'access',
+  headerClock = false,
+  headerActions,
+  footerVariant = 'default',
+  footerTicker,
   publishedTime,
   modifiedTime,
 } = Astro.props;
@@ -130,11 +145,11 @@ const structuredData = JSON.stringify({ '@context': 'https://schema.org', '@grap
     <a class="skip-link" href="#main">Skip to content</a>
     <div class="page">
       <div class="page-grid" aria-hidden="true"></div>
-      <SiteHeader currentPath={path} />
+      <SiteHeader currentPath={path} variant={headerVariant} clock={headerClock} actions={headerActions} />
       <main id="main" class="main" tabindex="-1">
         <slot />
       </main>
-      <SiteFooter note={footerNote} />
+      <SiteFooter note={footerNote} variant={footerVariant} ticker={footerTicker} />
     </div>
   </body>
 </html>

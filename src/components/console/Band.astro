@@ -1,0 +1,26 @@
+---
+import { BAND } from '../../data/console';
+---
+<section class="band" aria-label="Quarter to date">
+  <ul class="band-grid">
+    {BAND.map((b) => (
+      <li class="stat">
+        <span class="value">{b.value}</span>
+        <span class="label mono">{b.label}</span>
+      </li>
+    ))}
+  </ul>
+</section>
+
+<style>
+  .band { position: relative; z-index: 1; background: var(--ink); color: var(--paper); padding: 46px var(--gutter); }
+  .band-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 30px; max-width: 1560px; }
+  .stat { border-left: 1px solid var(--dark-line); padding-left: 18px; }
+  .value {
+    display: block; font-size: clamp(30px, 3.2vw, 44px); font-weight: 800; letter-spacing: -0.04em;
+    line-height: 1; color: var(--mag-light); font-variant-numeric: tabular-nums;
+  }
+  .label { display: block; font-size: 9px; letter-spacing: 0.16em; color: var(--dark-mute); margin-top: 10px; max-width: 24ch; line-height: 1.6; }
+  @media (max-width: 900px) { .band-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; } }
+  @media (max-width: 480px) { .band-grid { grid-template-columns: minmax(0, 1fr); } }
+</style>

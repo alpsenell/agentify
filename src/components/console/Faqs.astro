@@ -1,0 +1,52 @@
+---
+import { FAQS, DEFAULT_FAQ } from '../../data/console';
+---
+<section id="queries" class="faqs container" aria-labelledby="faqs-heading">
+  <div class="strip mono">
+    <span class="k">05</span>
+    <h2 id="faqs-heading" class="h">queries</h2>
+    <span class="rule" aria-hidden="true"></span>
+  </div>
+
+  <ul class="list">
+    {FAQS.map((f, i) => (
+      <li class="item">
+        <h3 class="q">
+          <button type="button" class="q-btn" data-faq={String(i)} aria-expanded={i === DEFAULT_FAQ ? 'true' : 'false'} aria-controls={`faq-${i}`}>
+            <span>{f.q}</span>
+            <span class="sign mono" aria-hidden="true"></span>
+          </button>
+        </h3>
+        <div class:list={['a', { 'is-open': i === DEFAULT_FAQ }]} id={`faq-${i}`} data-faq-panel={String(i)}>
+          <p>{f.a}</p>
+        </div>
+      </li>
+    ))}
+  </ul>
+</section>
+
+<style>
+  .faqs { position: relative; z-index: 1; padding-block: 20px 60px; max-width: 960px; }
+  .strip { display: flex; align-items: baseline; gap: 14px; font-size: 10px; letter-spacing: 0.2em; margin-bottom: 20px; }
+  .strip .h { font: inherit; letter-spacing: inherit; text-transform: inherit; color: var(--ink); }
+  .k { color: var(--mute); }
+  .rule { flex: 1; height: 1px; background: var(--line); min-width: 30px; }
+
+  .item { border-top: 1px solid var(--ink); }
+  .q { font: inherit; font-weight: inherit; }
+  .q-btn {
+    width: 100%; display: flex; align-items: center; gap: 20px;
+    background: transparent; border: 0; padding: 18px 0; color: var(--ink); text-align: left;
+    font-size: 19px; font-weight: 600; letter-spacing: -0.025em;
+  }
+  .q-btn:hover { color: var(--mag); }
+  .sign { margin-left: auto; font-size: 15px; color: var(--mute); letter-spacing: 0; }
+  .q-btn[aria-expanded='true'] .sign::before { content: '–'; color: var(--mag); }
+  .q-btn[aria-expanded='false'] .sign::before { content: '+'; }
+
+  .a { max-height: 0; overflow: hidden; transition: max-height .35s ease; }
+  .a.is-open { max-height: 320px; }
+  .a p { font-size: 15px; line-height: 1.65; color: var(--body); margin-bottom: 20px; max-width: 66ch; }
+
+  @media (max-width: 560px) { .q-btn { font-size: 17px; gap: 12px; } }
+</style>

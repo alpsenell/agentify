@@ -1,0 +1,55 @@
+---
+import { FAQS } from '../../data/pricing';
+---
+<section class="queries container" aria-labelledby="queries-heading">
+  <h2 class="strip mono" id="queries-heading">
+    <span class="strip-key">queries</span>
+    <span class="rule" aria-hidden="true"></span>
+  </h2>
+
+  <ul class="faqs">
+    {FAQS.map((f, i) => (
+      <li class:list={['faq', { open: i === 0 }]} data-faq={i}>
+        <h3 class="q">
+          <button
+            type="button" class="q-btn"
+            id={`faq-btn-${i}`} aria-controls={`faq-panel-${i}`}
+            aria-expanded={i === 0 ? 'true' : 'false'}
+          >
+            <span class="q-text">{f.q}</span>
+            <span class="sign mono" aria-hidden="true">{i === 0 ? '–' : '+'}</span>
+          </button>
+        </h3>
+        <div class="panel" id={`faq-panel-${i}`} role="region" aria-labelledby={`faq-btn-${i}`}>
+          <p class="a">{f.a}</p>
+        </div>
+      </li>
+    ))}
+  </ul>
+</section>
+
+<style>
+  .queries { position: relative; z-index: 1; padding-block: 44px 20px; max-width: 960px; }
+  .strip { font-size: 10px; font-weight: 400; display: flex; align-items: center; gap: 10px; font-size: 10px; letter-spacing: 0.2em; margin-bottom: 22px; }
+  .strip-key { color: var(--mute); }
+  .rule { flex: 1; height: 1px; background: var(--line); }
+
+  .faq { border-top: 1px solid var(--ink); }
+  .q { margin: 0; font-size: inherit; font-weight: inherit; }
+  .q-btn {
+    width: 100%; display: flex; align-items: center; gap: 20px;
+    background: transparent; border: 0; padding: 18px 0; color: var(--ink); text-align: left;
+  }
+  .q-btn:hover { color: var(--mag); }
+  .q-text { font-size: 19px; font-weight: 600; letter-spacing: -0.025em; }
+  .sign { margin-left: auto; font-size: 15px; letter-spacing: 0; color: var(--mute); }
+  .faq.open .sign { color: var(--mag); }
+
+  .panel { max-height: 0; overflow: hidden; transition: max-height 0.35s ease; }
+  .faq.open .panel { max-height: 260px; }
+  .a { font-size: 15px; line-height: 1.65; color: var(--body); margin: 0 0 20px; max-width: 66ch; }
+
+  @media (max-width: 520px) {
+    .q-text { font-size: 17px; }
+  }
+</style>

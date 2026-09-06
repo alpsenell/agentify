@@ -1,0 +1,114 @@
+---
+import { TASKS, ROUTES, TEAM, routeNote, COLOR } from '../../data/console';
+---
+<div class="route" data-panel="route" id="view-route" role="tabpanel" aria-labelledby="tab-route" tabindex="0" hidden>
+  <p class="hint mono">route · drag a task into intake and watch it dispatch</p>
+
+  <div class="route-grid">
+    <ul class="tasks">
+      {TASKS.map((t, i) => (
+        <li>
+          <button
+            type="button"
+            class="task"
+            data-task={String(i)}
+            style={`--accent:${i === 2 ? COLOR.orangeMark : COLOR.mag}`}
+          >
+            <span class="task-title">{t.title}</span>
+            <span class="task-kind mono">{t.kind} · drag me</span>
+          </button>
+        </li>
+      ))}
+    </ul>
+
+    <div>
+      <div class="drop" data-drop>
+        <p class="drop-label mono" data-drop-label>drop a task here</p>
+      </div>
+
+      {ROUTES.map((path, ti) => (
+        <div class="dispatch" data-route-for={String(ti)} hidden>
+          <ol class="chain">
+            {path.map((idx, i) => (
+              <li class:list={['chain-item', { 'is-current': i === 0, 'is-done': false }]} data-chain-step={String(i)}>
+                <div class="chip">
+                  <span class="chip-role mono">{TEAM[idx].role}</span>
+                  <span class="chip-name">{TEAM[idx].name}</span>
+                </div>
+                {i < path.length - 1 && <span class="arrow mono" aria-hidden="true">→</span>}
+              </li>
+            ))}
+          </ol>
+
+          <ol class="notes">
+            {path.map((idx, i) => {
+              const n = routeNote(idx);
+              return (
+                <li class="note" data-note-step={String(i)} hidden={i !== 0}>
+                  <span class="who mono">{n[0]}</span>
+                  <span class="what">{n[1]}</span>
+                </li>
+              );
+            })}
+          </ol>
+        </div>
+      ))}
+    </div>
+  </div>
+
+  <div class="ghost" data-drag-ghost hidden aria-hidden="true"><span data-drag-title></span></div>
+</div>
+
+<style>
+  .route { padding: 24px 20px 30px; }
+  .hint { font-size: 9px; letter-spacing: 0.18em; color: var(--mute); margin-bottom: 18px; }
+  .route-grid { display: grid; grid-template-columns: 232px minmax(0, 1fr); gap: 24px; }
+
+  .tasks { display: flex; flex-direction: column; gap: 10px; }
+  .task {
+    width: 100%; text-align: left; display: block;
+    border: 1px solid var(--ink); border-left: 3px solid var(--accent);
+    background: var(--card); padding: 12px; cursor: grab; touch-action: none; color: var(--ink);
+    transition: opacity .2s ease, background-color .2s ease;
+  }
+  .task:hover { background: var(--paper); }
+  .task[data-dispatched='true'] { background: var(--paper); }
+  .task[data-dragging='true'] { opacity: 0.35; }
+  .task-title { display: block; font-size: 14px; line-height: 1.35; margin-bottom: 8px; }
+  .task-kind { display: block; font-size: 8px; letter-spacing: 0.14em; color: var(--mute); }
+
+  .drop {
+    border: 2px dashed var(--idle); padding: 20px; text-align: center; margin-bottom: 20px;
+    transition: background-color .2s ease, border-color .2s ease;
+  }
+  .drop[data-over='true'] { border-color: var(--mag); background: #fdf1ea; }
+  .drop-label { font-size: 10px; letter-spacing: 0.18em; color: var(--mute); }
+  .drop[data-over='true'] .drop-label { color: var(--mag); }
+
+  .chain { display: flex; flex-wrap: wrap; gap: 8px; }
+  .chain-item { display: flex; align-items: center; gap: 8px; }
+  .chip { border: 1px solid var(--line); padding: 9px 12px; min-width: 96px; color: var(--mute); background: transparent; }
+  .chain-item.is-done .chip { border-color: var(--ink); background: var(--ink); color: var(--card); }
+  .chain-item.is-current .chip { border-color: var(--ink); background: var(--mag); color: var(--card); }
+  .chip-role { display: block; font-size: 8px; letter-spacing: 0.14em; opacity: 0.7; }
+  .chip-name { display: block; font-size: 14px; font-weight: 600; letter-spacing: -0.02em; }
+  .arrow { font-size: 11px; color: var(--idle); }
+  .chain-item.is-done .arrow { color: var(--mag); }
+
+  .notes { margin-top: 22px; border-top: 1px solid var(--line); padding-top: 14px; min-height: 96px; }
+  .note { display: grid; grid-template-columns: 100px minmax(0, 1fr); gap: 14px; padding: 5px 0; font-size: 13px; animation: ag-in .3s ease both; }
+  .who { font-size: 9px; letter-spacing: 0.14em; color: var(--mag); padding-top: 3px; }
+  .what { color: var(--ink); line-height: 1.45; }
+
+  .ghost {
+    position: fixed; z-index: 90; pointer-events: none;
+    border: 1px solid var(--ink); border-left: 3px solid var(--mag);
+    background: var(--card); padding: 10px 12px; font-size: 13px;
+    box-shadow: 6px 6px 0 rgba(22, 19, 15, 0.18); transform: translate(-50%, -50%);
+  }
+
+  @media (max-width: 760px) {
+    .route-grid { grid-template-columns: minmax(0, 1fr); }
+    .note { grid-template-columns: 74px minmax(0, 1fr); gap: 10px; }
+  }
+</style>

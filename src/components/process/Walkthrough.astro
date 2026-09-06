@@ -1,0 +1,50 @@
+---
+import { WALK, TAG_COLOR, agentColor } from '../../data/process';
+---
+<section class="walk container" aria-labelledby="walk-heading">
+  <div class="strip mono">
+    <span class="k">walkthrough</span>
+    <h2 id="walk-heading" class="h">one real ticket, end to end</h2>
+    <span class="rule" aria-hidden="true"></span>
+    <button type="button" class="replay mono" data-replay aria-pressed="false">replay the ticket</button>
+  </div>
+  <ol class="rows" data-walk>
+    {WALK.map((w) => (
+      <li class="row" data-walk-stage={w.stage}>
+        <time class="time mono">{w.time}</time>
+        <span class="agent mono" style={`color:${agentColor(w.agent)}`}>{w.agent}</span>
+        <span class="text">{w.text}</span>
+        <span class="tag mono" style={`color:${TAG_COLOR[w.tag] ?? 'var(--mute)'}`}>{w.tag}</span>
+      </li>
+    ))}
+  </ol>
+</section>
+
+<style>
+  .walk { position: relative; z-index: 1; padding-top: 54px; padding-bottom: 20px; }
+  .strip { display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap; font-size: 10px; letter-spacing: 0.2em; margin-bottom: 24px; }
+  .k { color: var(--mute); }
+  .h { font: inherit; letter-spacing: inherit; text-transform: inherit; }
+  .rule { flex: 1; height: 1px; background: var(--line); min-width: 24px; }
+  .replay { background: transparent; color: var(--ink); border: 1px solid var(--ink); padding: 8px 15px; font-size: 10px; }
+  .replay:hover { opacity: 0.85; }
+  .replay[aria-pressed="true"] { background: var(--mag); color: var(--card); }
+
+  .rows { border-left: 1px solid var(--ink); }
+  .row {
+    display: grid; grid-template-columns: 90px 108px minmax(0, 1fr) 108px; gap: 20px; align-items: baseline;
+    padding: 14px 0 14px 20px; border-bottom: 1px solid var(--line);
+    transition: opacity .3s ease, background-color .3s ease;
+  }
+  .row.is-dim { opacity: 0.22; }
+  .row.is-current { background: #fdf1ea; }
+  .time { font-size: 10px; letter-spacing: 0.1em; color: var(--mute); font-variant-numeric: tabular-nums; text-transform: none; }
+  .agent { font-size: 10px; letter-spacing: 0.14em; }
+  .text { font-size: 15px; line-height: 1.45; }
+  .tag { font-size: 9px; letter-spacing: 0.14em; text-align: right; }
+
+  @media (max-width: 720px) {
+    .row { grid-template-columns: 56px minmax(0, 1fr) 80px; gap: 12px; padding-left: 14px; }
+    .text { grid-column: 1 / -1; }
+  }
+</style>

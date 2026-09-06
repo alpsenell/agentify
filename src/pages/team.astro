@@ -1,19 +1,58 @@
 ---
 import Base from '../layouts/Base.astro';
-// Placeholder: this route exists so internal links resolve while the
-// "Team" design is implemented. It is noindex and not in the sitemap.
+import Hero from '../components/team/Hero.astro';
+import StageFilter from '../components/team/StageFilter.astro';
+import Roster from '../components/team/Roster.astro';
+import Handoff from '../components/team/Handoff.astro';
+import Cta from '../components/team/Cta.astro';
+import { TEAM, slug } from '../data/team';
+
+const title = 'The team: ten agents, ten standing briefs';
+const description =
+  'Ten roles with a written brief, allowed inputs, expected outputs and a hard stop — the Shopify build agents Agentify runs behind your approval gate.';
+const origin = (Astro.site ?? new URL('https://agentify.plus')).origin;
+
+const jsonLd = [
+  {
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Console', item: `${origin}/` },
+      { '@type': 'ListItem', position: 2, name: 'Team', item: `${origin}/team` },
+    ],
+  },
+  {
+    '@type': 'ItemList',
+    name: 'The Agentify build team',
+    itemListOrder: 'https://schema.org/ItemListOrderAscending',
+    numberOfItems: TEAM.length,
+    itemListElement: TEAM.map((m, i) => ({
+      '@type': 'ListItem',
+      position: i + 1,
+      url: `${origin}/team#agent-${slug(m)}`,
+      item: {
+        '@type': 'Thing',
+        name: `${m.name} — ${m.role}`,
+        description: m.brief,
+        url: `${origin}/team#agent-${slug(m)}`,
+      },
+    })),
+  },
+];
 ---
-<Base title="Team" description="Team page of Agentify, the AI-powered Shopify build team." path="/team" noindex>
-  <section class="container stub">
-    <p class="mono eyebrow">coming soon</p>
-    <h1>Team</h1>
-    <p>This page is being built. In the meantime, see <a href="/live">what the team is doing right now</a>.</p>
-  </section>
+<Base
+  title={title}
+  description={description}
+  path="/team"
+  ogImage="/og/team.png"
+  ogImageAlt="The Agentify team: ten agent roles from intake to the human gate, each with a brief and a hard stop"
+  jsonLd={jsonLd}
+  footerNote="agentify · a shopify build team that runs itself"
+>
+  <Hero />
+  <StageFilter />
+  <Roster />
+  <Handoff />
+  <Cta />
 </Base>
 
-<style>
-  .stub { padding-block: 80px 120px; max-width: 60ch; }
-  .eyebrow { font-size: 10px; color: var(--mag); margin-bottom: 18px; }
-  h1 { font-size: clamp(36px, 6vw, 56px); letter-spacing: -0.05em; line-height: 0.95; margin-bottom: 18px; }
-  p { font-size: 16px; color: var(--body); }
-</style>
+<script src="../scripts/team.ts"></script>

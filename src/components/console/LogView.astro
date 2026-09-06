@@ -1,0 +1,55 @@
+---
+import { LOG, DEFAULT_LOG_STEP } from '../../data/console';
+---
+<div class="logview" data-panel="log" id="view-log" role="tabpanel" aria-labelledby="tab-log" tabindex="0" hidden>
+  <div class="controls">
+    <button type="button" class="btn mono" data-log-step>step →</button>
+    <button type="button" class="btn btn--run mono" data-log-run aria-pressed="false">run all</button>
+    <button type="button" class="btn btn--reset mono" data-log-reset>reset</button>
+    <p class="progress mono" data-log-progress aria-live="polite">{DEFAULT_LOG_STEP} / {LOG.length} lines</p>
+  </div>
+
+  <div class="terminal">
+    <ol class="lines" data-log-lines>
+      {LOG.map(([agent, text], i) => (
+        <li class="line" data-log-line={String(i)} hidden={i >= DEFAULT_LOG_STEP}>
+          <span class="n">{String(i + 1).padStart(2, '0')}</span>
+          <span class:list={['agent', { 'agent--human': agent === 'human' }]}>{agent}</span>
+          <span class="text">{text}</span>
+        </li>
+      ))}
+    </ol>
+    <p class="prompt" aria-hidden="true"><span class="n">›</span><span class="caret">&nbsp;</span></p>
+  </div>
+</div>
+
+<style>
+  .logview { padding: 20px; }
+  .controls { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; flex-wrap: wrap; }
+  .btn { background: transparent; border: 1px solid var(--ink); color: var(--ink); padding: 8px 15px; font-size: 10px; letter-spacing: 0.16em; }
+  .btn:hover { background: var(--ink); color: var(--paper); }
+  .btn--run[aria-pressed='true'] { background: var(--mag); border-color: var(--mag); color: var(--card); }
+  .btn--run[aria-pressed='true']:hover { opacity: 0.85; background: var(--mag); color: var(--card); }
+  .btn--reset { border-color: var(--line); color: var(--mute); }
+  .btn--reset:hover { background: transparent; border-color: var(--ink); color: var(--ink); }
+  .progress { margin-left: auto; font-size: 10px; letter-spacing: 0.14em; color: var(--mute); }
+
+  .terminal {
+    background: var(--ink); padding: 18px 20px; min-height: 404px;
+    font-family: var(--font-mono); font-size: 12px; line-height: 1.75;
+    overflow-x: auto;
+  }
+  .line, .prompt { display: grid; grid-template-columns: 42px 92px minmax(0, 1fr); gap: 14px; }
+  .line { color: var(--dark-text); animation: ag-in .3s ease both; }
+  .prompt { grid-template-columns: 42px minmax(0, 1fr); color: var(--paper); }
+  .n { color: var(--dark-mute-2); }
+  .agent { color: var(--mag-light); }
+  .agent--human { color: #ff9c80; }
+  .caret { background: var(--paper); color: var(--ink); width: 8px; }
+
+  @media (max-width: 620px) {
+    .terminal { font-size: 11px; }
+    .line { grid-template-columns: 26px 72px minmax(0, 1fr); gap: 10px; }
+    .prompt { grid-template-columns: 26px minmax(0, 1fr); gap: 10px; }
+  }
+</style>

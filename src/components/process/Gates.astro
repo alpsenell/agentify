@@ -1,0 +1,35 @@
+---
+import { GATES } from '../../data/process';
+---
+<section class="gates container" aria-labelledby="gates-heading">
+  <div class="strip mono">
+    <h2 id="gates-heading" class="h">the three gates</h2>
+    <span class="rule" aria-hidden="true"></span>
+    <span>nothing passes on trust alone</span>
+  </div>
+  <ol class="grid">
+    {GATES.map((g) => (
+      <li class="gate">
+        <span class="num" style={`color:${g.tint}`} aria-hidden="true">{g.num}</span>
+        <h3 class="title">{g.title}</h3>
+        <p class="body">{g.body}</p>
+      </li>
+    ))}
+  </ol>
+</section>
+
+<style>
+  .gates { position: relative; z-index: 1; background: var(--ink); color: var(--paper); padding-block: 46px; margin-top: 40px; }
+  .strip { display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap; font-size: 10px; letter-spacing: 0.2em; margin-bottom: 30px; color: var(--dark-mute); }
+  .h { font: inherit; letter-spacing: inherit; text-transform: inherit; }
+  .rule { flex: 1; height: 1px; background: var(--dark-line); min-width: 24px; }
+  .grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); border-left: 1px solid var(--dark-line); }
+  .gate { border-right: 1px solid var(--dark-line); padding: 0 24px; }
+  .num { display: block; font-size: 46px; font-weight: 800; letter-spacing: -0.04em; line-height: 1; margin-bottom: 14px; }
+  .title { font-size: 21px; font-weight: 700; letter-spacing: -0.03em; margin-bottom: 10px; }
+  .body { font-size: 14px; line-height: 1.6; color: var(--dark-mute); }
+  @media (max-width: 860px) {
+    .grid { grid-template-columns: minmax(0, 1fr); gap: 28px; }
+    .gate { border-right: 0; }
+  }
+</style>

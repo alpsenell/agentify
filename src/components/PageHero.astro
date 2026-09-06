@@ -1,0 +1,36 @@
+---
+/**
+ * Shared hero used by Team, Process, Pricing and Contact: eyebrow with a
+ * 7px square, a large h1 on the left and a lead paragraph on the right.
+ */
+interface Props {
+  eyebrow: string;
+  title: string;
+  /** Max width of the h1 in ch units */
+  titleMax?: string;
+  /** Bottom padding, in px, of the hero band (design varies per page) */
+  padBottom?: number;
+  /** Largest h1 size in px */
+  size?: number;
+}
+const { eyebrow, title, titleMax = '17ch', padBottom = 34, size = 76 } = Astro.props;
+---
+<section class="hero container" aria-labelledby="page-title" style={`--pad-b:${padBottom}px; --h1:${size}px`}>
+  <p class="eyebrow mono"><span class="sq" aria-hidden="true"></span>{eyebrow}</p>
+  <div class="grid">
+    <h1 id="page-title" style={`max-width:${titleMax}`}>{title}</h1>
+    <p class="lead"><slot /></p>
+  </div>
+</section>
+
+<style>
+  .hero { position: relative; z-index: 1; padding-block: 56px var(--pad-b); border-bottom: 1px solid var(--ink); }
+  .eyebrow { display: flex; align-items: center; gap: 12px; font-size: 10px; letter-spacing: 0.2em; color: var(--mag); margin-bottom: 22px; }
+  .sq { width: 7px; height: 7px; background: var(--mag); flex: none; }
+  .grid { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.8fr); gap: 56px; align-items: end; }
+  h1 { font-size: clamp(42px, 6.2vw, var(--h1)); font-weight: 800; line-height: 0.92; letter-spacing: -0.05em; }
+  .lead { font-size: 16px; line-height: 1.6; color: var(--body); margin: 0 0 6px; }
+  @media (max-width: 900px) {
+    .grid { grid-template-columns: minmax(0, 1fr); gap: 24px; }
+  }
+</style>

@@ -1,0 +1,114 @@
+---
+/**
+ * Pipeline view. The design draws this on a <canvas>; here the graph is
+ * build-time SVG (edges) plus real buttons (nodes), so it renders and is
+ * navigable without JavaScript.
+ */
+import { TEAM, EDGES, NODES, GRAPH_W, GRAPH_H, edgePath, COLOR } from '../../data/console';
+---
+<div class="pipeline" data-panel="pipeline" id="view-pipeline" role="tabpanel" aria-labelledby="tab-pipeline" tabindex="0">
+  <div class="graph-scroll">
+    <div class="graph">
+      <svg class="edges" viewBox={`0 0 ${GRAPH_W} ${GRAPH_H}`} preserveAspectRatio="none" aria-hidden="true" focusable="false">
+        {EDGES.map(([a, b]) => (
+          <path d={edgePath([a, b])} data-edge data-a={a} data-b={b} vector-effect="non-scaling-stroke" />
+        ))}
+      </svg>
+
+      <p class="hint mono">pipeline graph · click a node</p>
+
+      <ul class="nodes">
+        {TEAM.map((t, i) => (
+          <li class="node-slot" style={`--x:${NODES[i].leftPct}%;--y:${NODES[i].topPct}%`}>
+            <button
+              type="button"
+              class:list={['node', { 'node--gate': i === 9 }]}
+              data-node={String(i)}
+              aria-pressed={i === 0 ? 'true' : 'false'}
+              aria-controls={`node-panel-${i}`}
+            >
+              <span class="mark" aria-hidden="true"></span>
+              <span class="node-name">{t.name}</span>
+              <span class="node-role mono">{t.role}</span>
+            </button>
+          </li>
+        ))}
+      </ul>
+
+      <ul class="legend mono">
+        <li><span class="sw" aria-hidden="true"></span>ticket</li>
+        <li><span class="sw sw--gate" aria-hidden="true"></span>human gate</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="detail">
+    {TEAM.map((t, i) => (
+      <article class="brief" id={`node-panel-${i}`} data-node-panel={String(i)} hidden={i !== 0}>
+        <p class="role mono" style={`color:${t.role === 'Human' ? COLOR.orangeText : COLOR.mag}`}>{t.role}</p>
+        <h3>{t.name}</h3>
+        <p class="stage mono">{t.stage}</p>
+        <p class="text">{t.brief}</p>
+        <ul class="outputs">
+          {t.outputs.map((o) => (
+            <li><span class="arrow" aria-hidden="true">→</span><span>{o}</span></li>
+          ))}
+        </ul>
+      </article>
+    ))}
+  </div>
+</div>
+
+<style>
+  .pipeline { display: grid; grid-template-columns: minmax(0, 1fr) 300px; }
+  .graph-scroll { overflow-x: auto; border-right: 1px solid var(--line); }
+  .graph { position: relative; height: 520px; min-width: 720px; }
+
+  .edges { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .edges path { fill: none; stroke: var(--line); stroke-width: 1; }
+  .edges path.is-lit { stroke: var(--mag); }
+
+  .hint { position: absolute; left: 18px; top: 16px; font-size: 9px; letter-spacing: 0.18em; color: var(--mute); }
+
+  .nodes { position: absolute; inset: 0; }
+  .node-slot { position: absolute; left: var(--x); top: var(--y); transform: translate(-50%, -50%); }
+
+  .node {
+    display: flex; flex-direction: column; align-items: center; gap: 5px;
+    background: transparent; border: 0; padding: 6px; width: 108px; color: var(--ink);
+  }
+  .mark {
+    width: 18px; height: 18px; background: var(--card);
+    border: 1px solid var(--ink); transition: background-color .2s ease, border-color .2s ease, width .2s ease, height .2s ease;
+  }
+  .node--gate .mark { border-color: #e0350f; }
+  .node:hover .mark { width: 22px; height: 22px; }
+  .node[aria-pressed='true'] .mark { width: 26px; height: 26px; background: var(--mag); border-width: 2px; }
+  .node--gate[aria-pressed='true'] .mark { background: var(--orange-text); }
+
+  .node-name { font-size: 12px; font-weight: 600; }
+  .node-role { font-size: 9px; letter-spacing: 0.1em; color: var(--mute); }
+
+  .legend {
+    position: absolute; left: 18px; bottom: 16px;
+    display: flex; gap: 16px; font-size: 9px; letter-spacing: 0.14em; color: var(--mute);
+  }
+  .legend li { display: flex; align-items: center; gap: 6px; }
+  .sw { width: 7px; height: 7px; background: var(--mag); }
+  .sw--gate { background: #e0350f; }
+
+  .detail { padding: 22px; }
+  .role { font-size: 9px; letter-spacing: 0.18em; margin-bottom: 8px; }
+  .detail h3 { font-size: 26px; font-weight: 700; letter-spacing: -0.03em; margin-bottom: 6px; }
+  .stage { font-size: 9px; letter-spacing: 0.14em; color: var(--mute); margin-bottom: 16px; }
+  .text { font-size: 14px; line-height: 1.6; color: var(--body); margin-bottom: 20px; }
+  .outputs { border-top: 1px solid var(--line); padding-top: 14px; display: flex; flex-direction: column; gap: 10px; }
+  .outputs li { display: grid; grid-template-columns: 12px minmax(0, 1fr); gap: 10px; font-size: 13px; line-height: 1.45; }
+  .arrow { color: var(--mag); }
+
+  @media (max-width: 900px) {
+    .pipeline { grid-template-columns: minmax(0, 1fr); }
+    .graph-scroll { border-right: 0; border-bottom: 1px solid var(--line); }
+    .graph { height: 420px; }
+  }
+</style>

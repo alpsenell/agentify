@@ -1,19 +1,60 @@
 ---
 import Base from '../layouts/Base.astro';
-// Placeholder: this route exists so internal links resolve while the
-// "Contact" design is implemented. It is noindex and not in the sitemap.
+import PageHero from '../components/PageHero.astro';
+import IntakeForm from '../components/contact/IntakeForm.astro';
+import Sidebar from '../components/contact/Sidebar.astro';
+
+const title = 'Contact: open a pilot with intake';
+const description =
+  'Tell Atlas what is wrong with your Shopify store, pick the roles you want on shift, and get a written pilot scope back within one business day. Nothing is billed until you approve it.';
+const origin = (Astro.site ?? new URL('https://agentify.plus')).origin;
+
+const jsonLd = [
+  {
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Console', item: `${origin}/` },
+      { '@type': 'ListItem', position: 2, name: 'Contact', item: `${origin}/contact` },
+    ],
+  },
+  {
+    '@type': 'ContactPage',
+    '@id': `${origin}/contact#contactpage`,
+    url: `${origin}/contact`,
+    name: title,
+    description,
+  },
+];
 ---
-<Base title="Contact" description="Contact page of Agentify, the AI-powered Shopify build team." path="/contact" noindex>
-  <section class="container stub">
-    <p class="mono eyebrow">coming soon</p>
-    <h1>Contact</h1>
-    <p>This page is being built. In the meantime, see <a href="/live">what the team is doing right now</a>.</p>
+<Base
+  title={title}
+  description={description}
+  path="/contact"
+  ogImage="/og/contact.png"
+  ogImageAlt="Agentify intake: three questions, then a written pilot scope"
+  jsonLd={jsonLd}
+  footerNote="agentify · intake is read by a human before anything is quoted"
+  headerVariant="intake"
+>
+  <PageHero eyebrow="intake · three questions, then a scope" title="Tell Atlas what is wrong. It writes the tickets." titleMax="18ch" padBottom={30} size={72}>
+    Your answers go straight into intake. Within one business day you get a written pilot scope back: tickets, agents assigned, the pipeline drawn, and what ships in week one.
+  </PageHero>
+
+  <section class="intake-grid container" aria-label="Intake form">
+    <IntakeForm />
+    <Sidebar />
   </section>
 </Base>
 
+<script src="../scripts/contact.ts"></script>
+
 <style>
-  .stub { padding-block: 80px 120px; max-width: 60ch; }
-  .eyebrow { font-size: 10px; color: var(--mag); margin-bottom: 18px; }
-  h1 { font-size: clamp(36px, 6vw, 56px); letter-spacing: -0.05em; line-height: 0.95; margin-bottom: 18px; }
-  p { font-size: 16px; color: var(--body); }
+  .intake-grid {
+    position: relative; z-index: 1;
+    padding-block: 30px 60px;
+    display: grid; grid-template-columns: minmax(0, 1fr) 340px; gap: 24px; align-items: start;
+  }
+  @media (max-width: 960px) {
+    .intake-grid { grid-template-columns: minmax(0, 1fr); }
+  }
 </style>

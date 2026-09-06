@@ -1,0 +1,50 @@
+---
+import { TEAM, COLOR } from '../../data/console';
+---
+<section id="team" class="team container" aria-labelledby="team-heading">
+  <div class="strip mono">
+    <span class="k">02</span>
+    <p class="k k--ink">the team</p>
+    <span class="rule" aria-hidden="true"></span>
+  </div>
+  <h2 id="team-heading">Ten roles. Each one an agent with a standing brief.</h2>
+
+  <ul class="grid">
+    {TEAM.map((t) => (
+      <li class="cell">
+        <a class="card" href={`#org-${t.name.toLowerCase()}`} data-team-open={t.name.toLowerCase()}>
+          <span class="role mono" style={`color:${t.role === 'Human' ? COLOR.orangeText : COLOR.mag}`}>{t.num} · {t.role}</span>
+          <span class="name">{t.name}</span>
+          <span class="short">{t.short}</span>
+        </a>
+      </li>
+    ))}
+  </ul>
+</section>
+
+<style>
+  .team { position: relative; z-index: 1; padding-block: 60px; }
+  .strip { display: flex; align-items: baseline; gap: 14px; font-size: 10px; letter-spacing: 0.2em; margin-bottom: 24px; }
+  .k { color: var(--mute); }
+  .k--ink { color: var(--ink); }
+  .rule { flex: 1; height: 1px; background: var(--line); min-width: 30px; }
+
+  h2 { font-size: clamp(30px, 4vw, 48px); font-weight: 700; letter-spacing: -0.04em; margin-bottom: 30px; max-width: 22ch; }
+
+  .grid { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); border-top: 1px solid var(--ink); border-left: 1px solid var(--ink); }
+  .cell { display: flex; }
+  .card {
+    display: flex; flex-direction: column; width: 100%;
+    border-right: 1px solid var(--ink); border-bottom: 1px solid var(--ink);
+    padding: 18px; min-height: 158px; color: var(--ink);
+    transition: background-color .2s ease, box-shadow .2s ease;
+  }
+  .card:hover { background: #ece8e0; box-shadow: inset 4px 0 0 var(--mag); color: var(--ink); }
+  .role { font-size: 8px; letter-spacing: 0.16em; margin-bottom: 10px; }
+  .name { font-size: 22px; font-weight: 700; letter-spacing: -0.03em; margin-bottom: 8px; }
+  .short { font-size: 12px; line-height: 1.5; color: var(--mute); }
+
+  @media (max-width: 1100px) { .grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+  @media (max-width: 720px) { .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  @media (max-width: 420px) { .grid { grid-template-columns: minmax(0, 1fr); } .card { min-height: 0; } }
+</style>

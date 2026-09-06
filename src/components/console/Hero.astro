@@ -1,0 +1,116 @@
+---
+import { HERO_TRACK, READOUTS, COLOR } from '../../data/console';
+const last = HERO_TRACK.length - 1;
+---
+<section class="hero container" aria-labelledby="console-title">
+  <div class="hero-inner">
+    <div class="hero-copy">
+      <p class="eyebrow mono"><span class="sq" aria-hidden="true"></span>ten agents · one pipeline · human sign-off</p>
+      <h1 id="console-title">A whole product team, running as software.</h1>
+      <p class="lede">
+        Product manager, designer, frontend, backend, QA, data, SEO, copy, deploy. Ten specialist
+        agents pass work down a real pipeline on your Shopify store — and a human reviewer signs the
+        last gate.
+      </p>
+      <p class="actions">
+        <a class="btn btn--solid mono" href="#access">Open a pilot</a>
+        <a class="btn btn--ghost mono" href="#console">Open the console</a>
+      </p>
+    </div>
+
+    <div class="ticket" aria-labelledby="ticket-heading">
+      <div class="ticket-head mono">
+        <h2 id="ticket-heading">ticket #4192 in flight</h2>
+        <span class="live">live</span>
+      </div>
+      <div class="runner" aria-hidden="true"><span class="dot"></span></div>
+      <ol class="track">
+        {HERO_TRACK.map((h, i) => (
+          <li class="step">
+            <span class="role mono" style={`color:${i === last ? COLOR.orangeText : COLOR.mag}`}>{h.role}</span>
+            <span class="text">{h.text}</span>
+            <span class="dur mono">{h.dur}</span>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </div>
+
+  <ul class="readouts">
+    {READOUTS.map((r) => (
+      <li class="readout">
+        <span class="value">{r.value}</span>
+        <span class="label mono">{r.label}</span>
+      </li>
+    ))}
+  </ul>
+</section>
+
+<style>
+  .hero { position: relative; z-index: 1; padding-top: 60px; border-bottom: 1px solid var(--ink); }
+  .hero-inner {
+    display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+    gap: 56px; align-items: end; max-width: 1560px;
+  }
+
+  .eyebrow {
+    display: flex; align-items: center; gap: 12px;
+    font-size: 10px; letter-spacing: 0.2em; color: var(--mag); margin-bottom: 26px;
+  }
+  .sq { width: 7px; height: 7px; background: var(--mag); flex: none; }
+
+  h1 {
+    font-size: clamp(42px, 7vw, 96px); font-weight: 800; line-height: 0.9;
+    letter-spacing: -0.05em; margin-bottom: 22px; max-width: 15ch;
+  }
+  .lede { font-size: clamp(16px, 1.4vw, 18px); line-height: 1.6; color: var(--body); max-width: 50ch; margin-bottom: 30px; }
+
+  .actions { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; margin-bottom: 44px; }
+  .btn { padding: 15px 26px; font-size: 11px; letter-spacing: 0.16em; }
+  .btn--solid { background: var(--mag); color: var(--card); }
+  .btn--solid:hover { background: var(--ink); color: var(--card); }
+  .btn--ghost { border: 1px solid var(--ink); color: var(--ink); }
+  .btn--ghost:hover { background: var(--ink); color: var(--paper); }
+
+  .ticket { border: 1px solid var(--ink); background: var(--card); padding: 22px 22px 18px; margin-bottom: 44px; }
+  .ticket-head {
+    display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    font-size: 9px; letter-spacing: 0.18em; color: var(--mute); margin-bottom: 18px;
+  }
+  .ticket-head h2 { font: inherit; letter-spacing: inherit; text-transform: inherit; font-weight: 400; }
+  .live { color: var(--mag); }
+
+  .runner { position: relative; height: 2px; background: var(--line); margin-bottom: 16px; }
+  .runner .dot { position: absolute; top: -3px; width: 8px; height: 8px; background: var(--mag); animation: ag-run 5.5s linear infinite; }
+  @keyframes ag-run { from { left: 0; } to { left: 100%; } }
+
+  .track { display: flex; flex-direction: column; gap: 9px; }
+  .step {
+    display: grid; grid-template-columns: 82px minmax(0, 1fr) auto; gap: 12px; align-items: baseline;
+  }
+  .role { font-size: 10px; letter-spacing: 0.1em; }
+  .text { font-size: 13px; color: var(--ink); line-height: 1.35; }
+  .dur { font-size: 10px; letter-spacing: 0.1em; color: var(--mute); }
+
+  .readouts {
+    display: grid; grid-template-columns: repeat(4, minmax(0, 1fr));
+    border-top: 1px solid var(--ink); max-width: 1560px; margin: 0;
+  }
+  .readout { padding: 18px 0; border-right: 1px solid var(--line); padding-right: 12px; }
+  .readout:last-child { border-right: 0; }
+  .value { display: block; font-size: clamp(24px, 2.4vw, 30px); font-weight: 700; letter-spacing: -0.03em; font-variant-numeric: tabular-nums; }
+  .label { display: block; font-size: 9px; letter-spacing: 0.16em; color: var(--mute); margin-top: 4px; line-height: 1.5; }
+
+  @media (max-width: 1000px) {
+    .hero-inner { grid-template-columns: minmax(0, 1fr); gap: 32px; }
+    .ticket { margin-bottom: 24px; }
+    .actions { margin-bottom: 8px; }
+  }
+  @media (max-width: 620px) {
+    .hero { padding-top: 40px; }
+    .readouts { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .readout:nth-child(2) { border-right: 0; }
+    .readout:nth-child(-n+2) { border-bottom: 1px solid var(--line); }
+    .step { grid-template-columns: 62px minmax(0, 1fr) auto; gap: 8px; }
+  }
+</style>

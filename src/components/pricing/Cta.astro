@@ -1,0 +1,31 @@
+---
+---
+<section class="cta container" aria-labelledby="pricing-cta-heading">
+  <div>
+    <h2 id="pricing-cta-heading">Start with two weeks. Decide after.</h2>
+    <p>The pilot is billed monthly and cancellable with two weeks' notice. You keep every branch, spec and log the team produced.</p>
+  </div>
+  <div class="actions">
+    <a class="btn mono" href="/contact">Open a pilot</a>
+  </div>
+</section>
+
+<style>
+  .cta {
+    position: relative; z-index: 1; padding-block: 40px 54px;
+    display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 56px; align-items: end;
+  }
+  h2 { font-size: clamp(32px, 4.2vw, 46px); font-weight: 800; letter-spacing: -0.045em; line-height: 1; margin: 0 0 16px; max-width: 18ch; }
+  p { font-size: 16px; color: var(--body); max-width: 44ch; }
+  .actions { justify-self: end; }
+  .btn {
+    display: inline-block; background: var(--mag); color: var(--card);
+    padding: 16px 28px; font-size: 11px; letter-spacing: 0.16em; white-space: nowrap;
+  }
+  .btn:hover { background: var(--ink); color: var(--card); }
+
+  @media (max-width: 860px) {
+    .cta { grid-template-columns: minmax(0, 1fr); gap: 28px; }
+    .actions { justify-self: start; }
+  }
+</style>

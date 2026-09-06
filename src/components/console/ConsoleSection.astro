@@ -1,0 +1,69 @@
+---
+import { VIEWS, DEFAULT_VIEW } from '../../data/console';
+import Pipeline from './Pipeline.astro';
+import Board from './Board.astro';
+import Timeline from './Timeline.astro';
+import LogView from './LogView.astro';
+import Org from './Org.astro';
+import Route from './Route.astro';
+---
+<section id="console" class="console container" aria-labelledby="console-heading">
+  <div class="strip mono">
+    <span class="k">01</span>
+    <h2 id="console-heading" class="h">the console</h2>
+    <span class="rule" aria-hidden="true"></span>
+    <p class="k">six views · one live build</p>
+  </div>
+
+  <div class="tabs" role="tablist" aria-label="Console views">
+    {VIEWS.map((v) => (
+      <button
+        type="button"
+        class="tab mono"
+        id={`tab-${v.key}`}
+        role="tab"
+        data-view={v.key}
+        aria-selected={v.key === DEFAULT_VIEW ? 'true' : 'false'}
+        aria-controls={`view-${v.key}`}
+        tabindex={v.key === DEFAULT_VIEW ? '0' : '-1'}
+      >{v.label}</button>
+    ))}
+  </div>
+
+  <div class="stage">
+    <Pipeline />
+    <Board />
+    <Timeline />
+    <LogView />
+    <Org />
+    <Route />
+  </div>
+</section>
+
+<style>
+  .console { position: relative; z-index: 1; padding-block: 54px 70px; }
+  .strip { display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap; font-size: 10px; letter-spacing: 0.2em; margin-bottom: 20px; }
+  .strip .h { font: inherit; letter-spacing: inherit; text-transform: inherit; color: var(--ink); }
+  .k { color: var(--mute); }
+  .rule { flex: 1; height: 1px; background: var(--line); min-width: 30px; }
+
+  .tabs { display: flex; flex-wrap: wrap; border: 1px solid var(--ink); border-bottom: 0; }
+  .tab {
+    flex: 1; min-width: 110px; background: transparent; color: var(--ink);
+    border: 0; border-right: 1px solid var(--ink); padding: 13px 10px; font-size: 10px; letter-spacing: 0.16em;
+  }
+  .tab:last-child { border-right: 0; }
+  .tab:hover { opacity: 0.82; }
+  .tab[aria-selected='true'] { background: var(--ink); color: var(--paper); }
+
+  .stage { border: 1px solid var(--ink); background: var(--card); min-height: 520px; }
+  .stage > [role='tabpanel']:focus-visible { outline-offset: -3px; }
+
+  @media (max-width: 640px) {
+    .tabs { border-bottom: 1px solid var(--ink); }
+    .tab { min-width: 33.333%; border-bottom: 1px solid var(--ink); }
+    .tab:nth-child(3n) { border-right: 0; }
+    .tab:nth-last-child(-n+3) { border-bottom: 0; }
+    .stage { min-height: 0; }
+  }
+</style>

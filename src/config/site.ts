@@ -25,5 +25,3 @@ export const NAV: readonly NavItem[] = [
   { href: '/pricing', label: 'Pricing' },
 ];
 
-/** Routes that exist only so internal links resolve; they are noindex and kept out of the sitemap. */
-export const PLACEHOLDER_ROUTES = ['/', '/team', '/process', '/pricing', '/contact'] as const;

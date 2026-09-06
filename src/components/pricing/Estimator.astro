@@ -1,0 +1,200 @@
+---
+import {
+  ROLE_ORDER, CADENCE_KEYS, ADDONS, ESTIMATOR, DEFAULT_STATE, estimate, money,
+} from '../../data/pricing';
+
+// The default state is priced at build time, so the estimate is in the
+// server-rendered HTML before a single byte of JavaScript runs.
+const est = estimate(DEFAULT_STATE);
+---
+<section class="estimator container" aria-labelledby="estimator-heading">
+  <h2 class="strip mono" id="estimator-heading">
+    <span class="strip-key">estimator</span>
+    <span class="strip-label">build your shift</span>
+    <span class="rule" aria-hidden="true"></span>
+  </h2>
+
+  <div class="panel">
+    <div class="controls">
+      <div class="block">
+        <div class="row">
+          <label class="mono block-label" for="est-roles">roles on shift</label>
+          <span class="block-value" data-role-count>{est.roleCount}</span>
+        </div>
+        <input
+          type="range" id="est-roles" data-roles
+          min={ESTIMATOR.roles.min} max={ESTIMATOR.roles.max} step={ESTIMATOR.roles.step}
+          value={DEFAULT_STATE.roles} aria-valuetext={est.roleCount}
+        />
+        <ul class="chips" data-chips>
+          {ROLE_ORDER.map((name, i) => (
+            <li
+              class:list={['chip', 'mono', { on: i < DEFAULT_STATE.roles, human: name === 'You' }]}
+              data-chip={i}
+            >{name}</li>
+          ))}
+        </ul>
+      </div>
+
+      <div class="block">
+        <div class="row">
+          <label class="mono block-label" for="est-stores">stores covered</label>
+          <span class="block-value" data-store-count>{est.storeCount}</span>
+        </div>
+        <input
+          type="range" id="est-stores" data-stores
+          min={ESTIMATOR.stores.min} max={ESTIMATOR.stores.max} step={ESTIMATOR.stores.step}
+          value={DEFAULT_STATE.stores} aria-valuetext={est.storeCount}
+        />
+      </div>
+
+      <div class="block cadence-block">
+        <p class="mono block-label" id="cadence-label">review cadence</p>
+        <div class="segmented" role="group" aria-labelledby="cadence-label">
+          {CADENCE_KEYS.map((c) => (
+            <button
+              type="button" class="seg mono" data-cadence={c}
+              aria-pressed={c === DEFAULT_STATE.cadence ? 'true' : 'false'}
+            >{c}</button>
+          ))}
+        </div>
+      </div>
+
+      <div class="block">
+        <p class="mono block-label" id="addons-label">add-ons</p>
+        <ul class="addons" aria-labelledby="addons-label">
+          {ADDONS.map((a) => (
+            <li>
+              <label class="addon">
+                <input type="checkbox" class="addon-input" data-addon={a.key} value={a.key} />
+                <span class="box" aria-hidden="true"></span>
+                <span class="addon-label">{a.label}</span>
+                <span class="addon-price mono">+{money(a.price)}</span>
+              </label>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+
+    <div class="summary">
+      <p class="mono summary-label" id="summary-label">your shift</p>
+      <output class="total" for="est-roles est-stores" aria-live="polite" aria-labelledby="summary-label" data-total
+      >{money(est.total)}</output>
+      <p class="mono sub">per month · <span data-closest>{est.closest}</span></p>
+      <dl class="lines" data-lines>
+        {est.lines.map((l) => (
+          <div class="line">
+            <dt data-line-label>{l.label}</dt>
+            <dd class="mono" data-line-value>{l.value}</dd>
+          </div>
+        ))}
+      </dl>
+      <p class="note">An estimate, not a quote. Intake confirms scope in a two-week pilot before anything recurring starts.</p>
+      <a class="send mono" href="/contact">Send this to intake</a>
+    </div>
+  </div>
+</section>
+
+<style>
+  .estimator { position: relative; z-index: 1; padding-block: 44px 0; }
+
+  .strip { font-size: 10px; font-weight: 400; display: flex; align-items: center; gap: 10px; font-size: 10px; letter-spacing: 0.2em; margin-bottom: 22px; }
+  .strip-key { color: var(--mute); }
+  .rule { flex: 1; height: 1px; background: var(--line); }
+
+  .panel {
+    display: grid; grid-template-columns: minmax(0, 1fr) 380px;
+    border: 1px solid var(--ink); background: var(--card);
+  }
+
+  /* ── left: controls ─────────────────────────────────────────────── */
+  .controls { padding: 30px 34px; border-right: 1px solid var(--ink); min-width: 0; }
+  .block { margin-bottom: 30px; }
+  .block:last-child { margin-bottom: 0; }
+  .cadence-block { margin-bottom: 26px; }
+
+  .row { display: flex; align-items: center; gap: 12px; }
+  .block-label { font-size: 10px; letter-spacing: 0.16em; color: var(--ink); }
+  .block-value {
+    margin-left: auto; font-size: 22px; font-weight: 700;
+    letter-spacing: -0.03em; font-variant-numeric: tabular-nums;
+  }
+
+  input[type='range'] {
+    width: 100%; margin: 12px 0 0; accent-color: var(--mag); display: block;
+  }
+
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 14px; }
+  .chip {
+    border: 1px solid var(--line); background: transparent; color: var(--mute);
+    padding: 5px 10px; font-size: 9px; letter-spacing: 0.12em;
+  }
+  .chip.on { border-color: transparent; background: var(--mag); color: var(--card); }
+  .chip.on.human { background: var(--orange-text); }
+
+  .segmented { display: flex; border: 1px solid var(--ink); margin-top: 12px; }
+  .seg {
+    flex: 1; background: transparent; color: var(--ink);
+    border: 0; border-right: 1px solid var(--ink);
+    padding: 11px 8px; font-size: 9px; letter-spacing: 0.14em;
+  }
+  .seg:last-child { border-right: 0; }
+  .seg:hover { opacity: 0.82; }
+  .seg[aria-pressed='true'] { background: var(--ink); color: var(--paper); }
+
+  .addons { margin-top: 12px; border-top: 1px solid var(--line); }
+  .addon {
+    display: grid; grid-template-columns: 18px minmax(0, 1fr) auto; gap: 14px;
+    align-items: center; padding: 13px 2px; border-bottom: 1px solid var(--line); cursor: pointer;
+    position: relative;
+  }
+  .addon:hover { background: var(--paper); }
+  .addon-input { position: absolute; left: 1px; top: 50%; transform: translateY(-50%); opacity: 0; width: 15px; height: 15px; margin: 0; }
+  .box { width: 15px; height: 15px; border: 1px solid var(--ink); background: transparent; display: block; }
+  .addon-input:checked + .box { background: var(--mag); }
+  .addon-input:focus-visible + .box { outline: 2px solid var(--mag); outline-offset: 2px; }
+  .addon-label { font-size: 14px; }
+  .addon-price { font-size: 11px; letter-spacing: 0.06em; color: var(--mute); text-transform: none; font-variant-numeric: tabular-nums; }
+
+  /* ── right: summary ─────────────────────────────────────────────── */
+  .summary {
+    padding: 30px 28px; background: var(--ink); color: var(--paper);
+    display: flex; flex-direction: column; min-width: 0;
+  }
+  .summary-label { font-size: 9px; letter-spacing: 0.18em; color: var(--dark-mute); margin-bottom: 18px; }
+  .total {
+    font-size: clamp(42px, 5vw, 56px); font-weight: 800; letter-spacing: -0.05em; line-height: 1;
+    color: var(--mag-light); font-variant-numeric: tabular-nums;
+  }
+  .sub { font-size: 9px; letter-spacing: 0.14em; color: var(--dark-mute); margin: 8px 0 24px; }
+
+  .lines { margin: 0; border-top: 1px solid var(--dark-line); }
+  .line {
+    display: flex; align-items: baseline; gap: 12px;
+    padding: 11px 0; border-bottom: 1px solid var(--dark-line-soft);
+  }
+  .line dt { font-size: 13px; color: var(--dark-text); }
+  .line dd {
+    margin: 0 0 0 auto; font-size: 12px; color: var(--dark-mute);
+    letter-spacing: 0.04em; text-transform: none; font-variant-numeric: tabular-nums;
+  }
+
+  .note { font-size: 12px; line-height: 1.6; color: var(--dark-mute); margin: 20px 0 0; }
+  .send {
+    margin-top: auto; text-align: center; background: var(--mag); color: var(--card);
+    padding: 14px 16px; font-size: 10px; letter-spacing: 0.16em;
+  }
+  .send:hover { background: var(--orange); color: var(--card); }
+
+  @media (max-width: 940px) {
+    .panel { grid-template-columns: minmax(0, 1fr); }
+    .controls { border-right: 0; border-bottom: 1px solid var(--ink); }
+  }
+  @media (max-width: 520px) {
+    .controls { padding: 24px 20px; }
+    .summary { padding: 24px 20px; }
+    .addon { grid-template-columns: 18px minmax(0, 1fr); row-gap: 4px; }
+    .addon-price { grid-column: 2; }
+  }
+</style>

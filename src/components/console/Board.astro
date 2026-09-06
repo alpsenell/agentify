@@ -1,0 +1,76 @@
+---
+import { COLUMNS, CARDS, cardAgent, COLOR } from '../../data/console';
+const byColumn = COLUMNS.map((_, ci) => CARDS.filter((c) => c.col === ci));
+---
+<div class="board" data-panel="board" id="view-board" role="tabpanel" aria-labelledby="tab-board" tabindex="0" hidden>
+  <div class="bar mono">
+    <p class="k">board · agents move their own cards</p>
+    <span class="rule" aria-hidden="true"></span>
+    <button type="button" class="advance mono" data-board-advance>advance one</button>
+  </div>
+
+  <div class="scroller">
+    <ol class="cols" data-board>
+      {COLUMNS.map((name, ci) => (
+        <li class="col" data-col={String(ci)}>
+          <div class="col-head mono">
+            <h3>{name}</h3>
+            <span class="count" data-col-count>{byColumn[ci].length}</span>
+          </div>
+          <ul class="cards" data-cards>
+            {byColumn[ci].map((c) => (
+              <li class="card" data-card-id={String(c.id)} style={`--accent:${ci === 4 ? COLOR.orangeMark : COLOR.mag}`}>
+                <p class="title">{c.title}</p>
+                <p class="meta mono">
+                  <span class="agent" data-card-agent>{cardAgent(c.id, ci)}</span>
+                  <span class="pts">{c.pts}</span>
+                </p>
+              </li>
+            ))}
+          </ul>
+        </li>
+      ))}
+    </ol>
+  </div>
+
+  <template data-card-template>
+    <li class="card" data-card-id="" style="--accent:#c2410c">
+      <p class="title"></p>
+      <p class="meta mono"><span class="agent" data-card-agent></span><span class="pts"></span></p>
+    </li>
+  </template>
+</div>
+
+<style>
+  .board { padding: 20px; }
+  .bar { display: flex; align-items: center; gap: 14px; margin-bottom: 16px; font-size: 9px; letter-spacing: 0.18em; color: var(--mute); }
+  .k { flex: none; }
+  .rule { flex: 1; height: 1px; background: var(--line); min-width: 20px; }
+  .advance {
+    background: transparent; border: 1px solid var(--ink); color: var(--ink);
+    padding: 6px 12px; font-size: 9px; letter-spacing: 0.16em; white-space: nowrap;
+  }
+  .advance:hover { background: var(--ink); color: var(--paper); }
+
+  .scroller { overflow-x: auto; }
+  .cols { display: grid; grid-template-columns: repeat(5, minmax(190px, 1fr)); gap: 12px; align-items: start; min-width: max-content; }
+  @media (min-width: 1100px) { .cols { min-width: 0; } }
+
+  .col { border: 1px solid var(--line); background: var(--paper); min-height: 400px; }
+  .col-head {
+    display: flex; align-items: baseline; gap: 8px; padding: 10px 12px;
+    border-bottom: 1px solid var(--line); font-size: 9px; letter-spacing: 0.14em; color: var(--ink);
+  }
+  .col-head h3 { font: inherit; letter-spacing: inherit; text-transform: inherit; font-weight: 400; }
+  .count { margin-left: auto; color: var(--mute); font-variant-numeric: tabular-nums; }
+
+  .cards { padding: 10px; display: flex; flex-direction: column; gap: 8px; }
+  .card {
+    border: 1px solid var(--ink); border-left: 3px solid var(--accent);
+    background: var(--card); padding: 10px; animation: ag-in .35s ease both;
+  }
+  .title { font-size: 13px; line-height: 1.35; margin-bottom: 8px; }
+  .meta { display: flex; align-items: center; gap: 8px; font-size: 8px; letter-spacing: 0.14em; color: var(--mute); }
+  .agent { border: 1px solid var(--line); padding: 2px 5px; }
+  .pts { margin-left: auto; }
+</style>

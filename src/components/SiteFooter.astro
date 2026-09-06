@@ -1,13 +1,29 @@
 ---
+import { NAV } from '../config/site';
+
 interface Props {
   note?: string;
+  /** "console": page links on the left and a live ticker on the right (home page). */
+  variant?: 'default' | 'console';
+  /** Initial ticker text for the console variant; updated by the page script via [data-ticker]. */
+  ticker?: string;
 }
-const { note = 'agentify' } = Astro.props;
+const { note = 'agentify', variant = 'default', ticker = '' } = Astro.props;
+const links = [...NAV.filter((n) => n.href !== '/'), { href: '/contact', label: 'Contact' }];
 ---
-<footer class="site-footer mono">
-  <p>{note}</p>
-  <a href="/" class="back">← console</a>
-</footer>
+{variant === 'console' ? (
+  <footer class="site-footer mono">
+    <nav class="links" aria-label="Footer">
+      {links.map((l) => <a href={l.href}>{l.label}</a>)}
+    </nav>
+    <p class="ticker" data-ticker aria-live="off">{ticker}</p>
+  </footer>
+) : (
+  <footer class="site-footer mono">
+    <p>{note}</p>
+    <a href="/" class="back">← console</a>
+  </footer>
+)}
 
 <style>
   .site-footer {
@@ -18,5 +34,9 @@ const { note = 'agentify' } = Astro.props;
     font-size: 9px; color: var(--mute);
   }
   .back { margin-left: auto; color: var(--ink); }
+  .links { display: flex; gap: 24px; flex-wrap: wrap; }
+  .links a { color: var(--mute); }
+  .links a:hover { color: var(--ink); }
+  .ticker { margin-left: auto; color: var(--ink); }
   .back:hover { color: var(--mag); }
 </style>

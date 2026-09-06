@@ -1,0 +1,37 @@
+---
+---
+<section id="contact" class="contact container" aria-labelledby="contact-heading">
+  <div class="copy">
+    <h2 id="contact-heading">Hand the team a ticket this week.</h2>
+    <p>Send the store and the goal. You get back a two-week pilot scope: agents assigned, pipeline drawn, what ships first.</p>
+  </div>
+
+  <form class="form" action="/contact" method="get">
+    <label class="visually-hidden" for="store">Store URL</label>
+    <input id="store" name="store" type="url" inputmode="url" placeholder="Store URL" autocomplete="url" />
+    <label class="visually-hidden" for="email">Work email</label>
+    <input id="email" name="email" type="email" placeholder="Work email" autocomplete="email" />
+    <button class="submit mono" type="submit">Request pilot scope</button>
+  </form>
+</section>
+
+<style>
+  .contact {
+    position: relative; z-index: 1; border-top: 1px solid var(--ink);
+    padding-block: 60px; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 56px; align-items: end;
+  }
+  h2 { font-size: clamp(34px, 4.6vw, 58px); font-weight: 800; letter-spacing: -0.045em; line-height: 0.98; margin-bottom: 18px; max-width: 16ch; }
+  .copy p { font-size: 16px; color: var(--body); max-width: 44ch; }
+
+  .form { display: flex; flex-direction: column; gap: 10px; max-width: 430px; justify-self: end; width: 100%; }
+  input { background: var(--card); border: 1px solid var(--ink); padding: 14px; font: inherit; font-size: 14px; color: var(--ink); }
+  input::placeholder { color: var(--mute); }
+  .submit { background: var(--mag); color: var(--card); border: 0; padding: 15px; font-size: 11px; letter-spacing: 0.16em; }
+  .submit:hover { background: var(--ink); }
+
+  @media (max-width: 860px) {
+    .contact { grid-template-columns: minmax(0, 1fr); gap: 28px; }
+    .form { justify-self: start; max-width: none; }
+  }
+</style>

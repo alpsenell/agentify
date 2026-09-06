@@ -1,0 +1,43 @@
+---
+import { PROMISES, DEFAULT_BAND, DEFAULT_PICKED } from '../../data/contact';
+---
+<aside class="side" aria-label="Draft ticket and what you get back">
+  <section class="draft" aria-labelledby="draft-heading">
+    <h2 id="draft-heading" class="k mono">draft ticket</h2>
+    <p class="draft-title" data-draft-title>Atlas is waiting for the problem statement.</p>
+    <dl class="rows">
+      <div><dt class="mono">store</dt><dd class="dim" data-draft="store">—</dd></div>
+      <div><dt class="mono">band</dt><dd data-draft="band">{DEFAULT_BAND}</dd></div>
+      <div><dt class="mono">roles</dt><dd class="accent" data-draft="roles">{DEFAULT_PICKED.length} of 10</dd></div>
+      <div><dt class="mono">status</dt><dd class="muted" data-draft="status">drafting</dd></div>
+    </dl>
+  </section>
+
+  <section class="promises" aria-labelledby="promises-heading">
+    <h2 id="promises-heading" class="k2 mono">what you get back</h2>
+    <ul>
+      {PROMISES.map((p) => (
+        <li><span class="dash" aria-hidden="true">—</span><span>{p}</span></li>
+      ))}
+    </ul>
+  </section>
+</aside>
+
+<style>
+  .side { display: flex; flex-direction: column; gap: 16px; }
+  .draft { border: 1px solid var(--ink); background: var(--ink); color: var(--paper); padding: 22px; }
+  .k { font-size: 9px; letter-spacing: 0.18em; font-weight: 400; color: var(--dark-mute); margin-bottom: 16px; }
+  .draft-title { font-size: 15px; line-height: 1.5; margin-bottom: 18px; color: var(--dark-text); overflow-wrap: anywhere; }
+  .rows { margin: 0; border-top: 1px solid var(--dark-line); }
+  .rows div { display: flex; align-items: baseline; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--dark-line-soft); }
+  .rows dt { font-size: 9px; letter-spacing: 0.14em; color: var(--dark-mute-2); }
+  .rows dd { margin: 0 0 0 auto; font-family: var(--font-mono); font-size: 11px; color: var(--dark-text); text-align: right; overflow-wrap: anywhere; }
+  .rows dd.dim { color: var(--dark-mute-2); }
+  .rows dd.muted { color: var(--dark-mute); }
+  .rows dd.accent { color: var(--mag-light); }
+
+  .promises { border: 1px solid var(--line); padding: 20px; }
+  .k2 { font-size: 9px; letter-spacing: 0.18em; font-weight: 400; color: var(--mute); margin-bottom: 14px; }
+  .promises li { display: grid; grid-template-columns: 14px minmax(0, 1fr); gap: 10px; padding: 7px 0; font-size: 14px; line-height: 1.5; color: var(--body); }
+  .dash { color: var(--mag); }
+</style>

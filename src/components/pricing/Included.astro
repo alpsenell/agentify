@@ -1,0 +1,62 @@
+---
+import { MATRIX } from '../../data/pricing';
+---
+<section class="included container" aria-labelledby="included-heading">
+  <h2 class="strip mono" id="included-heading">
+    <span class="strip-key">what is included</span>
+    <span class="rule" aria-hidden="true"></span>
+  </h2>
+
+  <div class="scroller">
+    <table class="matrix">
+      <caption class="visually-hidden">What each plan includes, by line item</caption>
+      <thead>
+        <tr>
+          <th scope="col" class="mono col-line">line</th>
+          <th scope="col" class="mono col-plan">pilot</th>
+          <th scope="col" class="mono col-plan is-team">team</th>
+          <th scope="col" class="mono col-plan">studio</th>
+        </tr>
+      </thead>
+      <tbody>
+        {MATRIX.map((m) => (
+          <tr>
+            <th scope="row" class="cell label">{m.label}</th>
+            <td class:list={['cell', { none: m.a === '—' }]}>{m.a}</td>
+            <td class="cell is-team">{m.b}</td>
+            <td class:list={['cell', { none: m.c === '—' }]}>{m.c}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<style>
+  .included { position: relative; z-index: 1; padding-block: 44px 0; max-width: 1180px; }
+  .strip { font-size: 10px; font-weight: 400; display: flex; align-items: center; gap: 10px; font-size: 10px; letter-spacing: 0.2em; margin-bottom: 22px; }
+  .strip-key { color: var(--mute); }
+  .rule { flex: 1; height: 1px; background: var(--line); }
+
+  .scroller { overflow-x: auto; }
+  .matrix {
+    width: 100%; min-width: 620px; border-collapse: collapse;
+    border-top: 1px solid var(--ink); text-align: left;
+  }
+  thead th {
+    font-size: 9px; letter-spacing: 0.16em; color: var(--mute); font-weight: 400;
+    padding: 12px 14px; vertical-align: bottom;
+  }
+  .col-line { width: 34%; padding-inline: 0; }
+  .col-plan { width: 22%; }
+  thead .is-team { color: var(--card); background: var(--mag); }
+
+  .cell { font-size: 14px; padding: 14px; border-top: 1px solid var(--line); color: var(--body); vertical-align: top; }
+  .label { padding-inline: 0; color: var(--ink); font-weight: 400; }
+  .cell.none { color: var(--idle); }
+  tbody .is-team { font-weight: 600; color: var(--ink); background: #fdf1ea; }
+
+  @media (max-width: 720px) {
+    .matrix { min-width: 560px; }
+  }
+</style>
