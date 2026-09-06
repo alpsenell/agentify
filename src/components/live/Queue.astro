@@ -1,0 +1,84 @@
+---
+import { QUEUE, FILTERS, STATUS_COLOR, RANGES, DEFAULT_RANGE } from '../../data/live';
+const rangeLabel = RANGES.find((r) => r.days === DEFAULT_RANGE)!.label;
+---
+<section class="queue" aria-labelledby="queue-heading">
+  <div class="head mono">
+    <h2 id="queue-heading" class="h">ticket queue</h2>
+    <span class="rule" aria-hidden="true"></span>
+    <div class="filters" role="group" aria-label="Filter tickets">
+      {FILTERS.map((f) => (
+        <button type="button" class="filter mono" data-filter={f} aria-pressed={f === 'all' ? 'true' : 'false'}>{f}</button>
+      ))}
+    </div>
+  </div>
+
+  <div class="scroller">
+    <table class="table">
+      <caption class="visually-hidden">Open tickets across the five lanes, newest first</caption>
+      <thead>
+        <tr class="mono">
+          <th scope="col">ticket</th>
+          <th scope="col">title</th>
+          <th scope="col">owner</th>
+          <th scope="col">lane</th>
+          <th scope="col">status</th>
+          <th scope="col" class="age">age</th>
+        </tr>
+      </thead>
+      <tbody>
+        {QUEUE.map((q) => (
+          <tr data-kind={q.kind} class:list={{ 'is-blocked': q.kind === 'blocked' }}>
+            <td class="id mono">{q.id}</td>
+            <td class="title">{q.title}</td>
+            <td class="owner">{q.owner}</td>
+            <td class="stage mono">{q.stage}</td>
+            <td class="status mono" style={`color:${STATUS_COLOR[q.status] ?? 'var(--mute)'}`}>{q.status}</td>
+            <td class="age mono">{q.age}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+  <p class="note mono" data-queue-note aria-live="polite">{QUEUE.length} of {QUEUE.length} tickets · {rangeLabel} window · anonymised across pilots</p>
+</section>
+
+<style>
+  .queue { border: 1px solid var(--ink); background: var(--card); }
+  .head {
+    display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+    padding: 13px 18px; border-bottom: 1px solid var(--ink);
+    font-size: 9px; letter-spacing: 0.18em;
+  }
+  .h { font: inherit; letter-spacing: inherit; text-transform: inherit; }
+  .rule { flex: 1; height: 1px; background: var(--line); min-width: 24px; }
+  .filters { display: flex; gap: 4px; }
+  .filter {
+    background: transparent; color: var(--mute); border: 1px solid var(--line);
+    padding: 5px 11px; font-size: 9px; letter-spacing: 0.14em;
+  }
+  .filter:hover { border-color: var(--ink); }
+  .filter[aria-pressed="true"] { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+
+  .scroller { overflow-x: auto; }
+  .table { width: 100%; min-width: 620px; border-collapse: collapse; }
+  thead tr { border-bottom: 1px solid var(--ink); }
+  th {
+    text-align: left; font-weight: 400; font-size: 8px; letter-spacing: 0.16em; color: var(--mute);
+    padding: 11px 6px;
+  }
+  th:first-child, td:first-child { padding-left: 18px; }
+  th:last-child, td:last-child { padding-right: 18px; }
+  tbody tr { border-bottom: 1px solid var(--line); }
+  tbody tr:last-child { border-bottom: 0; }
+  tbody tr.is-blocked { background: #fff3f0; }
+  td { padding: 13px 6px; vertical-align: middle; }
+  .id { font-size: 11px; color: var(--mute); font-variant-numeric: tabular-nums; letter-spacing: 0; text-transform: none; width: 70px; }
+  .title { font-size: 14px; line-height: 1.4; }
+  .owner { font-size: 13px; font-weight: 600; width: 88px; }
+  .stage { font-size: 9px; letter-spacing: 0.12em; color: var(--mute); width: 84px; }
+  .status { font-size: 9px; letter-spacing: 0.12em; width: 92px; }
+  .age { font-size: 10px; color: var(--mute); text-align: right; font-variant-numeric: tabular-nums; letter-spacing: 0; text-transform: none; width: 66px; }
+  th.age { font-size: 8px; letter-spacing: 0.16em; text-transform: uppercase; }
+  .note { padding: 13px 18px; border-top: 1px solid var(--line); font-size: 9px; color: var(--mute); }
+</style>

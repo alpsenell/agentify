@@ -1,0 +1,19 @@
+---
+import Base from '../layouts/Base.astro';
+// Placeholder: this route exists so internal links resolve while the
+// "Console" design is implemented. It is noindex and not in the sitemap.
+---
+<Base title="Console" description="Console page of Agentify, the AI-powered Shopify build team." path="/" noindex>
+  <section class="container stub">
+    <p class="mono eyebrow">coming soon</p>
+    <h1>Console</h1>
+    <p>This page is being built. In the meantime, see <a href="/live">what the team is doing right now</a>.</p>
+  </section>
+</Base>
+
+<style>
+  .stub { padding-block: 80px 120px; max-width: 60ch; }
+  .eyebrow { font-size: 10px; color: var(--mag); margin-bottom: 18px; }
+  h1 { font-size: clamp(36px, 6vw, 56px); letter-spacing: -0.05em; line-height: 0.95; margin-bottom: 18px; }
+  p { font-size: 16px; color: var(--body); }
+</style>

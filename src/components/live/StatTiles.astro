@@ -1,0 +1,71 @@
+---
+import { TILES, RANGES, DEFAULT_RANGE, deltaColor } from '../../data/live';
+import { series, sparkPaths, SPARK_W, SPARK_H } from '../../lib/spark';
+
+// Pre-compute every range window at build time; the client script swaps them.
+const tiles = TILES.map((t) => {
+  const byRange = Object.fromEntries(
+    RANGES.map((r) => {
+      const zero = t.values[r.days] === '0';
+      return [r.days, { value: t.values[r.days], ...sparkPaths(series(t.seed, t.amp, r.days, zero)) }];
+    }),
+  );
+  return { ...t, byRange };
+});
+---
+<section class="tiles container" aria-labelledby="tiles-heading">
+  <h2 id="tiles-heading" class="visually-hidden">Key figures for the selected window</h2>
+  <dl class="tile-grid">
+    {tiles.map((t) => {
+      const cur = t.byRange[DEFAULT_RANGE];
+      return (
+        <div class="tile" data-tile={t.key} data-ranges={JSON.stringify(t.byRange)}>
+          <dt class="label mono">{t.label}</dt>
+          <dd class="figure">
+            <span class="value" data-tile-value>{cur.value}</span>
+            <span class="delta mono" style={`color:${deltaColor(t.delta)}`}>{t.delta}</span>
+          </dd>
+          <dd class="spark">
+            <svg viewBox={`0 0 ${SPARK_W} ${SPARK_H}`} preserveAspectRatio="none" role="img" aria-label={`${t.label}, trend over the selected window`}>
+              <line class="base" x1="0" y1={SPARK_H - 0.5} x2={SPARK_W} y2={SPARK_H - 0.5} />
+              <path class="area" d={cur.area} data-spark-area />
+              <path class="line" d={cur.line} data-spark-line />
+              <line class="end" x1={cur.endX} y1={cur.endY} x2={cur.endX} y2={cur.endY} data-spark-end />
+            </svg>
+          </dd>
+        </div>
+      );
+    })}
+  </dl>
+</section>
+
+<style>
+  .tiles { position: relative; z-index: 1; }
+  .tile-grid {
+    margin: 0;
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    border-left: 1px solid var(--ink); border-bottom: 1px solid var(--ink);
+  }
+  .tile { border-right: 1px solid var(--ink); padding: 20px 20px 12px; background: var(--card); }
+  .label { font-size: 9px; color: var(--mute); margin-bottom: 12px; }
+  .figure { margin: 0; display: flex; align-items: baseline; gap: 10px; }
+  .value { font-size: 42px; font-weight: 800; letter-spacing: -0.04em; font-variant-numeric: tabular-nums; line-height: 1; }
+  .delta { font-size: 10px; letter-spacing: 0.1em; text-transform: none; }
+  .spark { margin: 14px 0 0; }
+  .spark svg { width: 100%; height: 46px; overflow: visible; }
+  .base { stroke: var(--line); stroke-width: 1; vector-effect: non-scaling-stroke; }
+  .area { fill: rgba(194, 65, 12, 0.10); stroke: none; }
+  .line { fill: none; stroke: var(--mag); stroke-width: 1.5; vector-effect: non-scaling-stroke; }
+  .end { stroke: var(--mag); stroke-width: 3; stroke-linecap: square; vector-effect: non-scaling-stroke; }
+  .area, .line, .end { transition: d .35s ease; }
+
+  @media (max-width: 1000px) {
+    .tile-grid { grid-template-columns: repeat(2, 1fr); border-top: 1px solid var(--ink); }
+    .tile:nth-child(-n+2) { border-bottom: 1px solid var(--ink); }
+  }
+  @media (max-width: 520px) {
+    .tile-grid { grid-template-columns: 1fr; }
+    .tile { border-bottom: 1px solid var(--ink); }
+    .tile:last-child { border-bottom: 0; }
+  }
+</style>

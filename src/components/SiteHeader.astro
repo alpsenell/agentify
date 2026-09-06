@@ -1,0 +1,77 @@
+---
+import { NAV, SITE } from '../config/site';
+
+interface Props {
+  currentPath: string;
+}
+const { currentPath } = Astro.props;
+---
+<header class="site-header">
+  <a class="brand" href="/" aria-label={`${SITE.name} home`}>
+    <span class="brand-name">agentify</span>
+    <span class="brand-tag mono">{SITE.tagline}</span>
+  </a>
+
+  <nav class="nav mono" aria-label="Primary">
+    {NAV.map((item) => (
+      <a href={item.href} aria-current={item.href === currentPath ? 'page' : undefined}>{item.label}</a>
+    ))}
+  </nav>
+
+  <p class="clock mono" aria-live="off">
+    <span class="dot" aria-hidden="true"></span>
+    <time data-clock aria-label="Current time">--:--</time>
+  </p>
+
+  <a class="cta mono" href="/contact">Request access</a>
+</header>
+
+<style>
+  .site-header {
+    position: sticky; top: 0; z-index: 55;
+    display: flex; align-items: center; flex-wrap: wrap;
+    gap: 14px 28px;
+    padding: 14px var(--gutter);
+    background: color-mix(in srgb, var(--paper) 88%, transparent);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--ink);
+  }
+  .brand {
+    display: flex; align-items: baseline; gap: 10px;
+    margin-right: 20px; color: var(--ink);
+  }
+  .brand:hover { color: var(--mag); }
+  .brand-name { font-weight: 800; font-size: 19px; letter-spacing: -0.04em; }
+  .brand-tag { font-size: 9px; letter-spacing: 0.18em; color: var(--mute); }
+
+  .nav { display: flex; gap: 22px; font-size: 10px; margin-right: auto; }
+  .nav a { color: var(--mute); }
+  .nav a:hover { color: var(--ink); }
+  .nav a[aria-current="page"] { color: var(--ink); border-bottom: 2px solid var(--mag); padding-bottom: 2px; }
+
+  .clock {
+    display: flex; align-items: center; gap: 8px;
+    font-size: 10px; letter-spacing: 0.14em; color: var(--mute);
+    font-variant-numeric: tabular-nums;
+  }
+  .dot {
+    width: 6px; height: 6px; border-radius: 50%; background: var(--mag);
+    animation: ag-blink 2s ease-in-out infinite;
+  }
+
+  .cta {
+    background: var(--ink); color: var(--paper);
+    padding: 10px 18px; font-size: 10px; white-space: nowrap;
+  }
+  .cta:hover { background: var(--mag); color: var(--paper); }
+
+  @media (max-width: 900px) {
+    .nav { order: 10; flex-basis: 100%; gap: 18px; overflow-x: auto; }
+  }
+  @media (max-width: 560px) {
+    .brand-tag { display: none; }
+    .clock { display: none; }
+    .brand { margin-right: auto; }
+  }
+</style>

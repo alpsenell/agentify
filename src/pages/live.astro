@@ -1,0 +1,89 @@
+---
+import Base from '../layouts/Base.astro';
+import StatTiles from '../components/live/StatTiles.astro';
+import Lanes from '../components/live/Lanes.astro';
+import Queue from '../components/live/Queue.astro';
+import Feed from '../components/live/Feed.astro';
+import Cta from '../components/live/Cta.astro';
+import { RANGES, DEFAULT_RANGE } from '../data/live';
+
+const title = 'Live board: what the team is doing right now';
+const description =
+  'A live, anonymised board of the Agentify Shopify build team: tickets shipped, median ticket-to-ship time, five orchestration lanes running in parallel, the ticket queue and the activity log.';
+const origin = (Astro.site ?? new URL('https://agentify.example.com')).origin;
+
+const jsonLd = [
+  {
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Console', item: `${origin}/` },
+      { '@type': 'ListItem', position: 2, name: 'Live', item: `${origin}/live` },
+    ],
+  },
+];
+---
+<Base
+  title={title}
+  description={description}
+  path="/live"
+  ogImage="/og/live.png"
+  ogImageAlt="Agentify live board showing five orchestration lanes, the ticket queue and the activity log"
+  jsonLd={jsonLd}
+  footerNote="agentify · figures anonymised and aggregated across active pilots"
+>
+  <section class="hero container" aria-labelledby="live-title">
+    <div class="hero-inner">
+      <div class="hero-copy">
+        <p class="eyebrow mono"><span class="sq" aria-hidden="true"></span>live board · anonymised across active pilots</p>
+        <h1 id="live-title">What the team is doing right now.</h1>
+      </div>
+      <div class="ranges" role="group" aria-label="Time window">
+        {RANGES.map((r) => (
+          <button type="button" class="range mono" data-range={r.days} aria-pressed={r.days === DEFAULT_RANGE ? 'true' : 'false'}>{r.label}</button>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <StatTiles />
+  <Lanes />
+
+  <section class="board container" aria-label="Ticket queue and activity">
+    <Queue />
+    <Feed />
+  </section>
+
+  <Cta />
+</Base>
+
+<script src="../scripts/live.ts"></script>
+
+<style>
+  .hero { position: relative; z-index: 1; padding-block: 46px 26px; border-bottom: 1px solid var(--ink); }
+  .hero-inner { display: flex; align-items: end; gap: 40px; flex-wrap: wrap; }
+  .hero-copy { flex: 1; min-width: min(420px, 100%); }
+  .eyebrow {
+    display: flex; align-items: center; gap: 12px;
+    font-size: 10px; letter-spacing: 0.2em; color: var(--mag); margin-bottom: 18px;
+  }
+  .sq { width: 7px; height: 7px; background: var(--mag); flex: none; }
+  h1 { font-size: clamp(40px, 6.5vw, 66px); font-weight: 800; line-height: 0.93; letter-spacing: -0.05em; max-width: 16ch; }
+
+  .ranges { display: flex; border: 1px solid var(--ink); }
+  .range {
+    background: transparent; color: var(--ink); border: 0; border-right: 1px solid var(--ink);
+    padding: 11px 18px; font-size: 10px;
+  }
+  .range:last-child { border-right: 0; }
+  .range:hover { opacity: 0.82; }
+  .range[aria-pressed="true"] { background: var(--ink); color: var(--paper); }
+
+  .board {
+    position: relative; z-index: 1;
+    padding-block: 26px 54px;
+    display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.8fr); gap: 24px; align-items: start;
+  }
+  @media (max-width: 1000px) {
+    .board { grid-template-columns: minmax(0, 1fr); }
+  }
+</style>

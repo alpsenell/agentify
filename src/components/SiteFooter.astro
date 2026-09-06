@@ -1,0 +1,22 @@
+---
+interface Props {
+  note?: string;
+}
+const { note = 'agentify' } = Astro.props;
+---
+<footer class="site-footer mono">
+  <p>{note}</p>
+  <a href="/" class="back">← console</a>
+</footer>
+
+<style>
+  .site-footer {
+    position: relative; z-index: 1;
+    border-top: 1px solid var(--ink);
+    padding: 18px var(--gutter);
+    display: flex; gap: 24px; align-items: center; flex-wrap: wrap;
+    font-size: 9px; color: var(--mute);
+  }
+  .back { margin-left: auto; color: var(--ink); }
+  .back:hover { color: var(--mag); }
+</style>

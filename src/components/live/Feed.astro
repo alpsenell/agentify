@@ -1,0 +1,57 @@
+---
+import { FEED_LINES, EVENT_COUNT, hhmm } from '../../data/live';
+
+// Initial nine entries, spaced 3.5 minutes apart, ending at build time.
+// The client script re-anchors the times to the viewer's clock on load.
+const now = Date.now();
+const initial = Array.from({ length: 9 }, (_, i) => {
+  const line = FEED_LINES[i % FEED_LINES.length];
+  const d = new Date(now - (9 - i) * 210000);
+  return { time: hhmm(d), iso: d.toISOString(), agent: line[0], text: line[1] };
+});
+---
+<section class="feed" aria-labelledby="feed-heading">
+  <div class="head mono">
+    <span class="dot" aria-hidden="true"></span>
+    <h2 id="feed-heading" class="h">activity</h2>
+    <p class="count"><span data-event-count>{EVENT_COUNT}</span> today</p>
+  </div>
+  <ol class="list" data-feed aria-live="polite" aria-relevant="additions" aria-atomic="false">
+    {initial.map((f) => (
+      <li class:list={['item', { 'is-you': f.agent === 'You' }]}>
+        <time class="time mono" datetime={f.iso}>{f.time}</time>
+        <span class="agent mono">{f.agent}</span>
+        <span class="text">{f.text}</span>
+      </li>
+    ))}
+  </ol>
+  <template id="feed-item">
+    <li class="item">
+      <time class="time mono"></time>
+      <span class="agent mono"></span>
+      <span class="text"></span>
+    </li>
+  </template>
+</section>
+
+<style>
+  .feed { border: 1px solid var(--ink); background: var(--ink); color: var(--paper); }
+  .head {
+    display: flex; align-items: center; gap: 12px;
+    padding: 13px 18px; border-bottom: 1px solid var(--dark-line);
+    font-size: 9px; letter-spacing: 0.18em; color: var(--dark-mute);
+  }
+  .h { font: inherit; letter-spacing: inherit; text-transform: inherit; }
+  .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--mag); animation: ag-blink 1.6s ease-in-out infinite; }
+  .count { margin-left: auto; color: var(--dark-mute-2); }
+  .list { padding: 8px 18px 18px; }
+  .item {
+    display: grid; grid-template-columns: 42px 62px 1fr; gap: 12px; align-items: baseline;
+    padding: 9px 0; border-bottom: 1px solid var(--dark-line-soft);
+    animation: ag-in .35s ease both;
+  }
+  .time { font-size: 9px; color: var(--dark-mute-2); font-variant-numeric: tabular-nums; letter-spacing: 0; text-transform: none; }
+  .agent { font-size: 9px; letter-spacing: 0.1em; color: var(--mag-light); }
+  .item.is-you .agent { color: #ff9c80; }
+  .text { font-size: 13px; line-height: 1.4; color: var(--dark-text); }
+</style>
