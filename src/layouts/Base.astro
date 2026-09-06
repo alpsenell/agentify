@@ -43,7 +43,7 @@ const {
   modifiedTime,
 } = Astro.props;
 
-const site = Astro.site ?? new URL('https://agentify.example.com');
+const site = Astro.site ?? new URL('https://agentify.plus');
 const canonical = new URL(path, site).href;
 const origin = site.origin;
 const fullTitle = `${title} | ${SITE.name}`;

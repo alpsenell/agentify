@@ -4,7 +4,7 @@ import sitemap from '@astrojs/sitemap';
 
 // Set PUBLIC_SITE_URL in the environment (or .env) to the production origin.
 // It drives canonical URLs, Open Graph URLs, sitemap.xml and robots.txt.
-const site = process.env.PUBLIC_SITE_URL || 'https://agentify.example.com';
+const site = process.env.PUBLIC_SITE_URL || 'https://agentify.plus';
 const PLACEHOLDER_ROUTES = new Set(['/', '/team', '/process', '/pricing', '/contact']);
 
 export default defineConfig({
