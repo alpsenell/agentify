@@ -1,9 +1,10 @@
 # Agentify
 
-Marketing site for Agentify, the AI-powered Shopify build team. Built with
-[Astro](https://astro.build): every page is pre-rendered to static HTML at
-build time, so search engines receive complete, crawlable documents without
-executing JavaScript. A small client script animates the Live board after load.
+Agentify, the AI-powered Shopify build team: the marketing site and the app
+clients use to work with the agents. Built with [Astro](https://astro.build).
+Every marketing page is pre-rendered to static HTML at build time, so search
+engines receive complete, crawlable documents without executing JavaScript.
+The app under `/dashboard` and its API run on the server.
 
 ## Pages
 
@@ -34,6 +35,72 @@ Pricing and Contact), page data in `src/data/`, page sections in
 - Real `<table>` for the ticket queue, lists for lanes and the feed, `<time>` elements
 - `sitemap-index.xml` and `robots.txt` generated at build time
 - Responsive layout with no horizontal page scroll; reduced-motion respected
+
+## The app (`/dashboard`)
+
+Where a client works with the team. They sign in, describe what they need in
+a thread, and the agents hand the request to each other:
+
+| Phase       | Agent  | What happens                                                        |
+| ----------- | ------ | ------------------------------------------------------------------- |
+| Discovery   | Atlas  | Talks with the client, writes the brief and acceptance criteria     |
+| Feasibility | Forge  | Checks it against Shopify and the store: blockers, edge cases       |
+| Design      | Muse   | UI/UX spec: layout, states, responsive, accessibility, copy         |
+| Build       | Volt   | Writes the theme files (Liquid, CSS, JS)                            |
+| Review      | Sieve  | Checks every acceptance criterion; a fail goes back to Volt         |
+| Gate        | Client | Approves, or returns it with a reason                               |
+| Ship        | Relay  | Deploys to an unpublished preview theme (never the live theme)      |
+
+Layout:
+
+- `src/agency/types.ts`: the shapes shared by server and app.
+- `src/server/`: accounts and sessions (`auth.ts`), storage (`storage.ts`),
+  tasks (`repo.ts`, `tasks.ts`), the agents (`agents/`: hand-off rules in
+  `flow.ts`, prompts in `prompts.ts`, the Claude call in `llm.ts`, one step in
+  `run.ts`) and the store connection (`shopify/`).
+- `src/pages/api/`: the HTTP API. `POST /api/tasks/:id/advance` runs one agent
+  step and streams it; the app calls it again while there is a next agent, so
+  no request outlives a serverless function.
+- `src/app/`: the React app, mounted client-only by
+  `src/pages/dashboard/[...path].astro`.
+
+The marketing pages stay pre-rendered; `/dashboard` and `/api` run on demand
+through the Vercel adapter.
+
+### Running it
+
+```sh
+cp .env.example .env   # set ANTHROPIC_API_KEY (and SESSION_SECRET for production)
+npm run dev            # http://localhost:4321/dashboard
+```
+
+Locally, data is kept as JSON files under `.data/`. On Vercel add a Redis
+integration (Upstash / Vercel KV) so `KV_REST_API_URL` and `KV_REST_API_TOKEN`
+are set, plus `ANTHROPIC_API_KEY` and `SESSION_SECRET`. `AGENTIFY_FAKE_LLM=1`
+swaps the model for a scripted stand-in, for UI work without credentials.
+
+The team runs on the server: a step finishes, saves, and starts the next in a
+fresh function invocation (`src/server/runner.ts`), so work continues with the
+tab closed. The app polls `GET /api/tasks/:id/live` to show the running step.
+
+Optional integrations, each switched on by its variables in `.env.example`:
+
+- **Stores** (`src/server/shopify/`): a workspace has several stores; each
+  connects to Shopify through the Agentify app (OAuth) or a pasted custom-app
+  token. Agents read the live theme; Relay deploys to an unpublished preview.
+- **GitHub** (`src/server/github/`): a store can be bound to a theme
+  repository. Agents then read the repo, and Relay opens a pull request.
+- **Checks** (`src/server/checks/`): Theme Check and JSON, schema and locale
+  checks run on every build before QA reads it.
+- **Attachments** (`src/server/attachments.ts`): images and small files in
+  the thread; Atlas, Forge and Muse see the images.
+- **Plans** (`src/agency/plans.ts`, `src/server/billing/`): token ceilings and
+  store and seat limits per plan; Stripe checkout and webhook.
+- **Members and email** (`src/server/members/`, `src/server/email/`):
+  invitations, and an email when a request needs the client.
+
+Unit tests live next to the code (`*.test.mjs`, `*.test.ts`); run one with
+`node --experimental-strip-types --test <file>`.
 
 ## Intake form
 

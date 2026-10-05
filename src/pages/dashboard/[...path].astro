@@ -1,0 +1,31 @@
+---
+/**
+ * The client app. One page serves every /dashboard/* URL; the React app in
+ * src/app takes over in the browser and talks to /api. It is an app behind a
+ * sign-in, so it is noindex and rendered on the client only.
+ */
+import { SITE } from '../../config/site';
+import App from '../../app/App';
+
+export const prerender = false;
+---
+<!doctype html>
+<html lang={SITE.lang}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{`${SITE.name} workspace`}</title>
+    <meta name="robots" content="noindex, nofollow" />
+    <meta name="theme-color" content="#f7f6f3" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" />
+    <style is:global>
+      html, body { margin: 0; }
+    </style>
+  </head>
+  <body>
+    <App client:only="react" />
+  </body>
+</html>

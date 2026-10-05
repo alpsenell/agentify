@@ -1,0 +1,7 @@
+/* The invitation screen: one centred card, same family as sign-in. */
+.join-card { width: min(440px, 100%); padding: 28px; display: flex; flex-direction: column; }
+.join-card .auth-title { overflow-wrap: anywhere; }
+.join-loading { display: grid; place-items: center; padding: 40px 0 16px; color: var(--text-3); }
+.join-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 20px; }
+.join-form { margin-top: 22px; }
+.join-form .input[readonly] { background: var(--surface-2); color: var(--text-2); }

@@ -1,6 +1,8 @@
 // @ts-check
 import { defineConfig } from 'astro/config';
 import sitemap from '@astrojs/sitemap';
+import react from '@astrojs/react';
+import vercel from '@astrojs/vercel';
 
 // Set PUBLIC_SITE_URL in the environment (or .env) to the production origin.
 // It drives canonical URLs, Open Graph URLs, sitemap.xml and robots.txt.
@@ -13,12 +15,18 @@ export default defineConfig({
   site,
   trailingSlash: 'never',
   build: { format: 'file' },
+  // Marketing pages are pre-rendered; the app (/dashboard) and /api run on demand.
   output: 'static',
+  adapter: vercel({ maxDuration: 300 }),
   compressHTML: true,
   integrations: [
+    react(),
     sitemap({
-      // Keep any noindex routes out of the sitemap.
-      filter: (page) => !PLACEHOLDER_ROUTES.has(new URL(page).pathname.replace(/\/$/, '') || '/'),
+      // The operator panel (/dashboard/*) is an app behind noindex, not content.
+      filter: (page) => {
+        const path = new URL(page).pathname.replace(/\/$/, '') || '/';
+        return !PLACEHOLDER_ROUTES.has(path) && !path.startsWith('/dashboard');
+      },
       changefreq: 'hourly',
       priority: 0.8,
     }),

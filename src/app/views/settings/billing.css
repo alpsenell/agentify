@@ -1,0 +1,39 @@
+/* Settings → Plan & usage. */
+.bill-current { display: grid; gap: 10px; padding: 16px; border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface-2); }
+.bill-current-head { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.bill-plan-name { font-size: 17px; letter-spacing: -0.01em; }
+.bill-manage { margin-left: auto; }
+.bill-status-line { font-size: 13px; color: var(--text-2); }
+
+.bill-meter { display: grid; gap: 6px; --meter: var(--ok); }
+.bill-meter[data-tone="warn"] { --meter: var(--warn); }
+.bill-meter[data-tone="danger"] { --meter: var(--danger); }
+.bill-meter-row { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; font-size: 13px; }
+.bill-meter-pct { font-variant-numeric: tabular-nums; font-weight: 600; color: var(--meter); }
+.bill-meter-track { height: 8px; border-radius: 999px; background: var(--active); overflow: hidden; }
+.bill-meter-fill { height: 100%; min-width: 0; border-radius: inherit; background: var(--meter); transition: width 600ms var(--ease), background var(--med) var(--ease); }
+
+.bill-offers { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 12px; }
+.bill-offer {
+  display: flex; flex-direction: column; gap: 12px; min-height: 220px; padding: 16px;
+  border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface);
+  transition: border-color var(--fast) var(--ease), box-shadow var(--fast) var(--ease);
+}
+.bill-offer:not(.skeleton):hover { border-color: var(--border-strong); box-shadow: var(--shadow-2); }
+.bill-offer[data-current] { border-color: color-mix(in srgb, var(--accent) 45%, var(--border)); box-shadow: 0 0 0 3px var(--accent-soft); }
+.bill-offer.skeleton { border: 0; }
+.bill-offer-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.bill-offer-name { font-weight: 650; font-size: 15px; }
+.bill-price { display: flex; flex-direction: column; gap: 2px; }
+.bill-price strong { font-size: 22px; letter-spacing: -0.02em; }
+.bill-price span { font-size: 12px; color: var(--text-3); }
+.bill-limits { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; font-size: 13px; }
+.bill-limits li { display: flex; align-items: baseline; gap: 6px; flex-wrap: wrap; }
+.bill-limits li > svg { flex: none; align-self: center; color: var(--text-3); }
+.bill-offer-action { margin-top: auto; display: flex; }
+.bill-offer-action .btn { width: 100%; justify-content: center; }
+.bill-offer-action .hint { display: inline-flex; align-items: center; gap: 6px; }
+
+@media (max-width: 720px) {
+  .bill-manage { margin-left: 0; }
+}

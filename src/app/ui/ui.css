@@ -1,0 +1,106 @@
+/* Shared React components: modal, menu, phase dots, priority flags, actors. */
+
+/* ── modal ─────────────────────────────────────────────────────────── */
+.modal-layer { position: fixed; inset: 0; z-index: 200; display: grid; place-items: center; padding: 24px; }
+.modal-layer.dialog { align-items: start; padding-top: min(14vh, 120px); }
+.modal-scrim {
+  position: absolute; inset: 0; background: rgba(28, 25, 21, 0.32);
+  backdrop-filter: blur(2px); -webkit-backdrop-filter: blur(2px);
+  animation: modal-fade var(--med) var(--ease) both;
+}
+.modal-panel {
+  position: relative; display: flex; flex-direction: column; min-height: 0;
+  width: min(560px, 100%); max-height: calc(100dvh - 48px);
+  background: var(--surface); border-radius: var(--radius-l); box-shadow: var(--shadow-3);
+  animation: modal-in var(--med) var(--ease) both; outline: none;
+}
+.modal-layer.sheet .modal-panel { width: min(1180px, 100%); height: calc(100dvh - 48px); max-height: none; overflow: hidden; }
+.modal-layer.sheet .modal-panel { animation-name: sheet-in; }
+.modal-layer[data-state="closed"] .modal-scrim { animation: modal-fade 180ms var(--ease) reverse both; }
+.modal-layer[data-state="closed"] .modal-panel { animation: modal-out 180ms var(--ease) both; }
+.modal-layer.sheet[data-state="closed"] .modal-panel { animation-name: sheet-out; }
+.modal-layer[data-state="closed"] { pointer-events: none; }
+
+@media (max-width: 640px) {
+  .modal-layer { padding: 0; }
+  .modal-layer.dialog { align-items: end; padding-top: 0; }
+  .modal-layer.dialog .modal-panel { width: 100%; max-height: 92dvh; border-radius: var(--radius-l) var(--radius-l) 0 0; animation-name: sheet-in; }
+  .modal-layer.sheet .modal-panel { width: 100%; height: 100dvh; border-radius: 0; }
+  .modal-layer.dialog[data-state="closed"] .modal-panel { animation-name: sheet-out; }
+}
+
+@keyframes modal-fade { from { opacity: 0; } to { opacity: 1; } }
+@keyframes modal-in { from { opacity: 0; transform: translateY(8px) scale(0.98); } to { opacity: 1; transform: none; } }
+@keyframes modal-out { to { opacity: 0; transform: translateY(6px) scale(0.98); } }
+@keyframes sheet-in { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: none; } }
+@keyframes sheet-out { to { opacity: 0; transform: translateY(24px); } }
+
+/* ── menu ──────────────────────────────────────────────────────────── */
+.menu { position: relative; display: inline-flex; }
+.menu-list {
+  position: fixed; z-index: 250; min-width: 168px; max-height: min(360px, 70vh); overflow-y: auto; padding: 4px;
+  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow-2);
+  outline: none; animation-duration: 140ms;
+}
+.menu-heading { padding: 6px 8px 4px; font-size: 11px; font-weight: 600; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.04em; }
+.menu-item {
+  display: flex; align-items: center; gap: 8px; height: 30px; padding: 0 8px; border-radius: var(--radius-s);
+  font-size: 13px; color: var(--text); cursor: pointer; white-space: nowrap; user-select: none;
+  transition: background var(--fast) var(--ease);
+}
+.menu-item[data-active="true"] { background: var(--hover); }
+.menu-item[data-tone="danger"] { color: var(--danger); }
+.menu-label { flex: 1; display: inline-flex; align-items: center; gap: 8px; }
+.menu-check { color: var(--accent); font-weight: 700; }
+
+/* ── phase dot ─────────────────────────────────────────────────────── */
+.phase-dot { display: inline-block; flex: none; width: 8px; height: 8px; border-radius: 50%; background: var(--dot, var(--text-3)); }
+[data-phase="discovery"] { --dot: var(--phase-discovery); }
+[data-phase="feasibility"] { --dot: var(--phase-feasibility); }
+[data-phase="design"] { --dot: var(--phase-design); }
+[data-phase="build"] { --dot: var(--phase-build); }
+[data-phase="review"] { --dot: var(--phase-review); }
+[data-phase="gate"] { --dot: var(--phase-gate); }
+[data-phase="ship"] { --dot: var(--phase-ship); }
+[data-phase="done"] { --dot: var(--phase-done); }
+
+/* ── priority flag ─────────────────────────────────────────────────── */
+.prio { display: inline-flex; align-items: center; gap: 4px; font-size: 12px; font-weight: 550; color: var(--text-3); white-space: nowrap; }
+.prio[data-priority="urgent"] { color: var(--danger); }
+.prio[data-priority="high"] { color: var(--warn); }
+.prio[data-priority="normal"] { color: var(--info); }
+.prio[data-priority="low"] { color: var(--text-3); }
+
+/* ── next actor ────────────────────────────────────────────────────── */
+.actor { display: inline-flex; align-items: center; gap: 6px; min-width: 0; font-size: 12px; color: var(--text-2); position: relative; }
+.actor-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.actor.you .actor-name { color: var(--accent-text); font-weight: 600; }
+.actor.none { color: var(--text-3); }
+/* A soft pulse next to an agent that is on it. */
+.actor-live { width: 6px; height: 6px; border-radius: 50%; background: var(--ok); animation: actor-live 1.8s ease-in-out infinite; }
+@keyframes actor-live { 0%, 100% { opacity: 0.35; } 50% { opacity: 1; } }
+/* Up next but not running: the avatar sits back a little. */
+.actor[data-running="false"] .avatar { opacity: 0.7; }
+.actor.paused { color: var(--warn); }
+.actor.paused .actor-name { font-weight: 600; }
+@media (prefers-reduced-motion: reduce) { .actor-live { animation: none; opacity: 1; } }
+
+/* ── store tag ─────────────────────────────────────────────────────── */
+[data-env="development"] { --env: var(--info); }
+[data-env="staging"] { --env: var(--warn); }
+[data-env="production"] { --env: var(--ok); }
+.store-tag {
+  display: inline-flex; align-items: center; gap: 5px; min-width: 0; max-width: 140px; height: 20px; padding: 0 7px;
+  border: 1px solid var(--border); border-radius: 999px; background: var(--surface); font-size: 11px; font-weight: 550; color: var(--text-2);
+}
+.store-tag-dot { flex: none; width: 6px; height: 6px; border-radius: 50%; background: var(--env, var(--text-3)); }
+.store-tag-text { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.env-tag { color: var(--env); background: color-mix(in srgb, var(--env) 12%, var(--surface)); }
+
+/* ── logo ──────────────────────────────────────────────────────────── */
+.app-logo { display: inline-flex; align-items: center; gap: 8px; color: var(--text); }
+.app-logo-mark {
+  display: grid; place-items: center; width: 24px; height: 24px; border-radius: 7px;
+  background: var(--accent); color: #fff; font-weight: 800; font-size: 15px; line-height: 1; padding-bottom: 2px;
+}
+.app-logo-word { font-weight: 800; font-size: 17px; letter-spacing: -0.04em; }
