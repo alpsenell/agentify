@@ -284,9 +284,9 @@ export interface Tier {
 }
 
 export const TIERS: Tier[] = [
-  { kicker: 'Pilot', price: '$4,500', unit: 'per month · one store', cta: 'Open a pilot', slots: '4 slots',
+  { kicker: 'Pilot', price: '$2,250', unit: 'per month · one store', cta: 'Open a pilot', slots: '4 slots',
     features: ['Four agents of your choice', 'Weekly human review', 'Full pipeline log and diffs', 'Two-week exit, no notice'] },
-  { kicker: 'Team', price: '$9,800', unit: 'per month · one store', cta: 'Talk to us', slots: '2 slots', featured: true,
+  { kicker: 'Team', price: '$4,900', unit: 'per month · one store', cta: 'Talk to us', slots: '2 slots', featured: true,
     features: ['All ten roles on shift', 'Daily review, same-day ship', 'Experiment queue always running', 'Plus and headless ready', 'Shared Slack channel'] },
   { kicker: 'Studio', price: 'Custom', unit: 'multi-store · white label', cta: 'Request scope', slots: 'by intake',
     features: ['Multiple stores or brands', 'White-label for agencies', 'Custom agents on your playbooks', 'Dedicated planner and SLA'] },

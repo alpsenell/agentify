@@ -19,7 +19,7 @@ export interface Tier {
 export const TIERS: Tier[] = [
   {
     kicker: 'Pilot',
-    price: '$4,500',
+    price: '$2,250',
     unit: 'per month · one store',
     cta: 'Open a pilot',
     slots: '4 slots',
@@ -35,7 +35,7 @@ export const TIERS: Tier[] = [
   },
   {
     kicker: 'Team',
-    price: '$9,800',
+    price: '$4,900',
     unit: 'per month · one store',
     cta: 'Talk to us',
     slots: '2 slots',
@@ -76,7 +76,7 @@ export const ROLE_ORDER = [
 
 export type Cadence = 'Weekly' | 'Daily' | 'Hourly';
 
-export const CADENCES: Record<Cadence, number> = { Weekly: 0, Daily: 1400, Hourly: 2900 };
+export const CADENCES: Record<Cadence, number> = { Weekly: 0, Daily: 700, Hourly: 1450 };
 export const CADENCE_KEYS = Object.keys(CADENCES) as Cadence[];
 
 export interface Addon {
@@ -86,10 +86,10 @@ export interface Addon {
 }
 
 export const ADDONS: Addon[] = [
-  { key: 'headless', label: 'Headless or custom storefront', price: 1800 },
-  { key: 'migration', label: 'Platform migration support', price: 2400 },
-  { key: 'whitelabel', label: 'White-label for your clients', price: 1200 },
-  { key: 'sla', label: 'One-hour incident SLA', price: 900 },
+  { key: 'headless', label: 'Headless or custom storefront', price: 900 },
+  { key: 'migration', label: 'Platform migration support', price: 1200 },
+  { key: 'whitelabel', label: 'White-label for your clients', price: 600 },
+  { key: 'sla', label: 'One-hour incident SLA', price: 450 },
 ];
 
 export interface MatrixRow {
@@ -135,15 +135,15 @@ export const FAQS: Faq[] = [
   },
   {
     q: 'Can we pause instead of cancel?',
-    a: 'Yes, for up to two months. The board freezes, the queue is preserved, and billing drops to a $600 hold per store.',
+    a: 'Yes, for up to two months. The board freezes, the queue is preserved, and billing drops to a $300 hold per store.',
   },
 ];
 
 /* ── estimator ─────────────────────────────────────────────────────── */
 
 export const ESTIMATOR = {
-  base: 1900,
-  perRole: 650,
+  base: 950,
+  perRole: 325,
   /** Each extra store costs 60% of (base + roles). */
   extraStoreRate: 0.6,
   roles: { min: 2, max: 10, step: 1, default: 6 },
@@ -193,7 +193,7 @@ export function estimate(state: EstimatorState): Estimate {
   const cadenceCost = CADENCES[state.cadence];
   const addonsCost = ADDONS.reduce((sum, a) => (state.addons.includes(a.key) ? sum + a.price : sum), 0);
   const total = base + rolesCost + storesCost + cadenceCost + addonsCost;
-  const closest = total < 6500 ? 'closest to Pilot' : total < 13000 ? 'closest to Team' : 'Studio territory';
+  const closest = total < 3250 ? 'closest to Pilot' : total < 6500 ? 'closest to Team' : 'Studio territory';
 
   return {
     base, rolesCost, storesCost, cadenceCost, addonsCost, total, closest,

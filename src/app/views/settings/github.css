@@ -1,0 +1,59 @@
+/* GitHub settings: the installation section and each store's repository. */
+
+.gh-connect { display: grid; gap: 14px; }
+.gh-points { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; font-size: 13px; color: var(--text-2); line-height: 1.5; }
+.gh-points li { display: grid; grid-template-columns: 18px 1fr; gap: 8px; align-items: start; }
+.gh-points svg { margin-top: 3px; color: var(--ok); }
+.gh-points li:last-child svg { color: var(--text-3); }
+
+.gh-confirm { align-items: flex-start; }
+.gh-confirm > svg { flex: none; margin-top: 2px; color: var(--warn); }
+.gh-confirm[data-tone="danger"] > svg, .banner[data-tone="danger"] > svg { color: var(--danger); }
+.gh-confirm-body { display: grid; gap: 8px; flex: 1; min-width: 0; }
+.gh-confirm-body p { margin: 0; line-height: 1.5; }
+.gh-confirm-body .set-actions { justify-content: flex-start; }
+
+/* ── a store's repository ── */
+.repo-bind { display: grid; gap: 12px; padding-top: 12px; border-top: 1px solid var(--border); }
+.repo-bind-head { display: flex; align-items: center; gap: 10px; min-width: 0; }
+.repo-bind-icon { display: grid; place-items: center; flex: none; width: 28px; height: 28px; border-radius: 50%; background: var(--hover); color: var(--text-2); }
+.repo-bind-main { flex: 1; display: grid; gap: 2px; min-width: 0; font-size: 13px; }
+.repo-bind-label { font-size: 12px; font-weight: 600; color: var(--text-2); }
+.repo-bind-value { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; min-width: 0; }
+.repo-bind-value a { display: inline-flex; align-items: center; gap: 4px; font-size: 13px; color: var(--text); text-decoration: none; overflow: hidden; text-overflow: ellipsis; transition: color var(--fast) var(--ease); }
+.repo-bind-value a:hover { color: var(--accent-text); }
+.repo-bind-actions { display: flex; gap: 4px; flex: none; }
+
+.repo-form { display: grid; gap: 14px; padding: 14px; border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface-2); }
+.repo-form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.repo-skel { display: grid; gap: 6px; }
+.repo-skel .skeleton { height: 30px; }
+
+.repo-picker { display: grid; gap: 8px; }
+.repo-search { position: relative; }
+.repo-search > svg { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); color: var(--text-3); pointer-events: none; }
+.repo-search .input { width: 100%; padding-left: 32px; }
+.repo-list { list-style: none; margin: 0; padding: 4px; max-height: 232px; overflow-y: auto; border: 1px solid var(--border); border-radius: var(--radius-s); background: var(--surface); overscroll-behavior: contain; }
+.repo-opt { display: flex; align-items: center; gap: 8px; padding: 7px 8px; border-radius: var(--radius-s); cursor: pointer; font-size: 13px; transition: background var(--fast) var(--ease); }
+.repo-opt[aria-selected="true"] { background: var(--hover); }
+.repo-opt-name { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.repo-opt-owner { color: var(--text-3); }
+.repo-opt svg { color: var(--text-3); }
+.repo-none { padding: 10px 8px; }
+.repo-keep { justify-self: start; }
+
+.repo-picked { display: flex; align-items: center; gap: 8px; padding: 6px 6px 6px 10px; border: 1px solid var(--border); border-radius: var(--radius-s); background: var(--surface); font-size: 13px; }
+.repo-picked .mono { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+.repo-picked svg { color: var(--text-2); }
+
+.repo-form .select { width: 100%; }
+
+@media (max-width: 640px) {
+  .repo-form-row { grid-template-columns: 1fr; }
+  .repo-bind-head { flex-wrap: wrap; }
+  .repo-bind-actions { width: 100%; justify-content: flex-end; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .repo-opt, .repo-bind-value a { transition: none; }
+}

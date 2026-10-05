@@ -32,6 +32,8 @@ const { currentPath, variant = 'access', clock = false, actions } = Astro.props;
     </p>
   )}
 
+  <a class="panel-link mono" href="/dashboard">Sign in</a>
+
   {variant === 'intake' ? (
     <p class="intake mono">intake · 2 slots open</p>
   ) : (
@@ -79,6 +81,8 @@ const { currentPath, variant = 'access', clock = false, actions } = Astro.props;
   }
   .cta:hover { background: var(--mag); color: var(--paper); }
   .intake { font-size: 10px; color: var(--mag); white-space: nowrap; }
+  .panel-link { font-size: 10px; color: var(--mute); white-space: nowrap; }
+  .panel-link:hover { color: var(--ink); }
 
   @media (max-width: 900px) {
     .nav { order: 10; flex-basis: 100%; gap: 18px; overflow-x: auto; }

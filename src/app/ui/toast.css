@@ -1,0 +1,27 @@
+/* Toast stack, bottom-left on desktop, full-width bottom on phones. */
+.toaster {
+  position: fixed; z-index: 400; left: 16px; bottom: 16px;
+  display: flex; flex-direction: column; gap: 8px; pointer-events: none;
+  width: min(380px, calc(100vw - 32px));
+}
+.toast {
+  pointer-events: auto; display: flex; align-items: flex-start; gap: 10px;
+  padding: 10px 10px 10px 12px; border-radius: var(--radius);
+  background: var(--text); color: #fff; box-shadow: var(--shadow-3);
+  font-size: 13px; line-height: 1.4;
+  animation: toast-in var(--med) var(--ease) both;
+}
+.toast.leaving { animation: toast-out 180ms var(--ease) both; }
+.toast-dot { flex: none; width: 8px; height: 8px; margin-top: 5px; border-radius: 50%; background: #9aa6ff; }
+.toast[data-tone="ok"] .toast-dot { background: #6fd39a; }
+.toast[data-tone="warn"] .toast-dot { background: #f2c26b; }
+.toast[data-tone="danger"] .toast-dot { background: #ff8a80; }
+.toast-msg { flex: 1; min-width: 0; overflow-wrap: anywhere; }
+.toast-x {
+  flex: none; width: 22px; height: 22px; margin: -2px 0; border: 0; border-radius: var(--radius-s);
+  background: transparent; color: rgba(255, 255, 255, 0.6); font-size: 16px; line-height: 1;
+  transition: background var(--fast) var(--ease), color var(--fast) var(--ease);
+}
+.toast-x:hover { background: rgba(255, 255, 255, 0.12); color: #fff; }
+@keyframes toast-in { from { opacity: 0; transform: translateY(8px) scale(0.98); } to { opacity: 1; transform: none; } }
+@keyframes toast-out { to { opacity: 0; transform: translateY(4px) scale(0.98); } }

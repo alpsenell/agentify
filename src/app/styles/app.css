@@ -1,0 +1,202 @@
+/* Agentify app — design tokens and shared primitives for everything under
+   /dashboard. The app is a work tool, so it is softer than the marketing
+   site: rounded surfaces, quiet borders, short transitions. It keeps the
+   brand's warm ink and orange accent. Component styles live next to their
+   components; only what several components share belongs here. */
+
+.app-root {
+  /* surfaces */
+  --bg: #f7f6f3;
+  --surface: #ffffff;
+  --surface-2: #faf9f7;
+  --hover: #f1efeb;
+  --active: #e9e6e0;
+  --border: #e6e2db;
+  --border-strong: #d3cdc3;
+
+  /* text */
+  --text: #1c1915;
+  --text-2: #55504a;
+  --text-3: #8a847b;
+
+  /* brand */
+  --accent: #d9480f;
+  --accent-hover: #c2410c;
+  --accent-soft: #fff1e8;
+  --accent-text: #b23a0a;
+
+  /* status */
+  --ok: #1f8a4c;      --ok-soft: #e7f5ec;
+  --warn: #b7791f;    --warn-soft: #fdf4e3;
+  --danger: #c92a2a;  --danger-soft: #fdecec;
+  --info: #3b5bdb;    --info-soft: #ecf0ff;
+
+  /* one hue per pipeline phase: pills, board columns, progress */
+  --phase-discovery: #7048e8;
+  --phase-feasibility: #3b5bdb;
+  --phase-design: #c2255c;
+  --phase-build: #d9480f;
+  --phase-review: #0c8599;
+  --phase-gate: #b7791f;
+  --phase-ship: #2f9e44;
+  --phase-done: #868e96;
+
+  --radius-s: 6px;
+  --radius: 10px;
+  --radius-l: 14px;
+  --shadow-1: 0 1px 2px rgba(28, 25, 21, 0.06);
+  --shadow-2: 0 4px 16px rgba(28, 25, 21, 0.08), 0 1px 3px rgba(28, 25, 21, 0.06);
+  --shadow-3: 0 18px 48px rgba(28, 25, 21, 0.18), 0 2px 8px rgba(28, 25, 21, 0.08);
+
+  --ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --fast: 120ms;
+  --med: 220ms;
+
+  --font: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --mono: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+
+  font-family: var(--font);
+  font-size: 14px;
+  line-height: 1.45;
+  color: var(--text);
+  background: var(--bg);
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+
+.app-root *, .app-root *::before, .app-root *::after { box-sizing: border-box; }
+.app-root h1, .app-root h2, .app-root h3, .app-root h4 { margin: 0; font-weight: 650; letter-spacing: -0.01em; }
+.app-root p { margin: 0; }
+.app-root a { color: var(--accent-text); text-decoration: none; }
+.app-root a:hover { color: var(--accent-hover); }
+.app-root button { font: inherit; cursor: pointer; }
+.app-root :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: var(--radius-s); }
+
+/* ── buttons ───────────────────────────────────────────────────────── */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  height: 32px; padding: 0 12px; border-radius: var(--radius-s);
+  border: 1px solid var(--border-strong); background: var(--surface); color: var(--text);
+  font-size: 13px; font-weight: 550; white-space: nowrap;
+  transition: background var(--fast) var(--ease), border-color var(--fast) var(--ease), transform var(--fast) var(--ease), box-shadow var(--fast) var(--ease);
+}
+.btn:hover { background: var(--hover); }
+.btn:active { transform: translateY(1px); }
+.btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; box-shadow: var(--shadow-1); }
+.btn.primary:hover { background: var(--accent-hover); border-color: var(--accent-hover); }
+.btn.ghost { border-color: transparent; background: transparent; color: var(--text-2); }
+.btn.ghost:hover { background: var(--hover); color: var(--text); }
+.btn.danger { color: var(--danger); border-color: color-mix(in srgb, var(--danger) 35%, var(--border)); }
+.btn.danger:hover { background: var(--danger-soft); }
+.btn.small { height: 26px; padding: 0 8px; font-size: 12px; }
+.btn.large { height: 40px; padding: 0 16px; font-size: 14px; }
+.btn.icon { width: 32px; padding: 0; }
+.btn.icon.small { width: 26px; }
+.btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+/* ── inputs ────────────────────────────────────────────────────────── */
+.field { display: flex; flex-direction: column; gap: 6px; }
+.field > label, .label { font-size: 12px; font-weight: 600; color: var(--text-2); }
+.input, .textarea, .select {
+  width: 100%; padding: 8px 10px; border-radius: var(--radius-s);
+  border: 1px solid var(--border-strong); background: var(--surface); color: var(--text);
+  font: inherit; font-size: 14px;
+  transition: border-color var(--fast) var(--ease), box-shadow var(--fast) var(--ease);
+}
+.textarea { min-height: 88px; resize: vertical; line-height: 1.5; }
+.input::placeholder, .textarea::placeholder { color: var(--text-3); }
+.input:hover, .textarea:hover, .select:hover { border-color: var(--text-3); }
+.input:focus, .textarea:focus, .select:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+.input[aria-invalid="true"], .textarea[aria-invalid="true"] { border-color: var(--danger); }
+.hint { font-size: 12px; color: var(--text-3); }
+.error-text { font-size: 12px; color: var(--danger); }
+
+/* ── surfaces ──────────────────────────────────────────────────────── */
+.card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow-1); }
+.divider { height: 1px; background: var(--border); border: 0; margin: 0; }
+
+/* ── pills and badges ──────────────────────────────────────────────── */
+/* Phase pill: set data-phase to colour it, e.g. <span class="pill" data-phase="build">. */
+.pill {
+  display: inline-flex; align-items: center; gap: 6px;
+  height: 22px; padding: 0 8px; border-radius: 999px;
+  font-size: 11px; font-weight: 650; letter-spacing: 0.02em; text-transform: uppercase; white-space: nowrap;
+  color: var(--pill, var(--text-2)); background: color-mix(in srgb, var(--pill, var(--text-3)) 12%, var(--surface));
+}
+.pill::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+.pill[data-phase="discovery"] { --pill: var(--phase-discovery); }
+.pill[data-phase="feasibility"] { --pill: var(--phase-feasibility); }
+.pill[data-phase="design"] { --pill: var(--phase-design); }
+.pill[data-phase="build"] { --pill: var(--phase-build); }
+.pill[data-phase="review"] { --pill: var(--phase-review); }
+.pill[data-phase="gate"] { --pill: var(--phase-gate); }
+.pill[data-phase="ship"] { --pill: var(--phase-ship); }
+.pill[data-phase="done"] { --pill: var(--phase-done); }
+
+/* Small neutral or toned tag: data-tone = ok | warn | danger | info | accent. */
+.tag {
+  display: inline-flex; align-items: center; gap: 4px; height: 20px; padding: 0 7px; border-radius: var(--radius-s);
+  font-size: 11px; font-weight: 600; white-space: nowrap; color: var(--text-2); background: var(--hover);
+}
+.tag[data-tone="ok"] { color: var(--ok); background: var(--ok-soft); }
+.tag[data-tone="warn"] { color: var(--warn); background: var(--warn-soft); }
+.tag[data-tone="danger"] { color: var(--danger); background: var(--danger-soft); }
+.tag[data-tone="info"] { color: var(--info); background: var(--info-soft); }
+.tag[data-tone="accent"] { color: var(--accent-text); background: var(--accent-soft); }
+
+/* ── avatars ───────────────────────────────────────────────────────── */
+/* Round initial avatar. data-who = an agent id, "client" or "system". */
+.avatar {
+  display: inline-grid; place-items: center; flex: none;
+  width: 28px; height: 28px; border-radius: 50%;
+  font-size: 12px; font-weight: 700; color: #fff; background: var(--who, var(--text-3));
+}
+.avatar.small { width: 20px; height: 20px; font-size: 10px; }
+.avatar.large { width: 40px; height: 40px; font-size: 15px; }
+.avatar[data-who="atlas"] { --who: var(--phase-discovery); }
+.avatar[data-who="forge"] { --who: var(--phase-feasibility); }
+.avatar[data-who="muse"] { --who: var(--phase-design); }
+.avatar[data-who="volt"] { --who: var(--phase-build); }
+.avatar[data-who="sieve"] { --who: var(--phase-review); }
+.avatar[data-who="relay"] { --who: var(--phase-ship); }
+.avatar[data-who="client"] { --who: var(--text); }
+.avatar[data-who="system"] { --who: var(--text-3); }
+
+/* ── feedback ──────────────────────────────────────────────────────── */
+.spinner {
+  width: 14px; height: 14px; border-radius: 50%; flex: none;
+  border: 2px solid color-mix(in srgb, currentColor 25%, transparent); border-top-color: currentColor;
+  animation: app-spin 0.7s linear infinite;
+}
+/* Three pulsing dots: an agent is writing. */
+.typing { display: inline-flex; gap: 3px; align-items: center; }
+.typing i { width: 5px; height: 5px; border-radius: 50%; background: currentColor; opacity: 0.35; animation: app-pulse 1.1s ease-in-out infinite; }
+.typing i:nth-child(2) { animation-delay: 0.15s; }
+.typing i:nth-child(3) { animation-delay: 0.3s; }
+
+.skeleton { border-radius: var(--radius-s); background: linear-gradient(90deg, var(--hover) 25%, var(--active) 37%, var(--hover) 63%); background-size: 400% 100%; animation: app-shimmer 1.4s ease infinite; }
+
+.empty { display: grid; place-items: center; gap: 8px; padding: 56px 24px; text-align: center; color: var(--text-2); }
+.empty h3 { font-size: 16px; color: var(--text); }
+
+.banner { display: flex; align-items: flex-start; gap: 10px; padding: 10px 12px; border-radius: var(--radius-s); font-size: 13px; background: var(--info-soft); color: var(--text); }
+.banner[data-tone="warn"] { background: var(--warn-soft); }
+.banner[data-tone="danger"] { background: var(--danger-soft); }
+.banner[data-tone="ok"] { background: var(--ok-soft); }
+
+/* Entrance used for rows, cards, messages and panels. */
+.fade-in { animation: app-fade var(--med) var(--ease) both; }
+.pop-in { animation: app-pop var(--med) var(--ease) both; }
+
+.mono { font-family: var(--mono); font-size: 12px; }
+.sr-only { position: absolute !important; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+
+@keyframes app-spin { to { transform: rotate(360deg); } }
+@keyframes app-pulse { 0%, 100% { opacity: 0.3; transform: translateY(0); } 50% { opacity: 1; transform: translateY(-2px); } }
+@keyframes app-shimmer { from { background-position: 100% 50%; } to { background-position: 0 50%; } }
+@keyframes app-fade { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+@keyframes app-pop { from { opacity: 0; transform: scale(0.98) translateY(6px); } to { opacity: 1; transform: none; } }
+
+@media (prefers-reduced-motion: reduce) {
+  .app-root *, .app-root *::before, .app-root *::after { animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; transition-duration: 0.001ms !important; }
+}
